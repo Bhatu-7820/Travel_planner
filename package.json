@@ -1,0 +1,14 @@
+{
+  "name": "traveloop-root",
+  "version": "1.0.0",
+  "description": "Traveloop Full Stack Application",
+  "scripts": {
+    "predev": "kill-port 3001",
+    "dev": "npm run predev && npx concurrently \"npm run dev --prefix traveloop-frontend\" \"npm start --prefix traveloop-backend\"",
+    "install-all": "npm install --prefix traveloop-frontend && npm install --prefix traveloop-backend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "kill-port": "^2.0.1"
+  }
+}
