@@ -50,7 +50,12 @@ export default function ItineraryView({ readOnly = false }) {
       {trip && (
         <>
           <div className="overflow-hidden rounded-[2rem] border border-white/20 bg-white shadow-soft dark:border-slate-800 dark:bg-slate-900">
-            <img src={trip.coverPhoto} alt={trip.name} className="h-64 w-full object-cover" />
+            <img
+              src={trip.coverPhoto}
+              alt={trip.name}
+              className="h-64 w-full object-cover"
+              onError={(e) => { e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(trip.name)}&background=14b8a6&color=fff&size=800&format=png`; }}
+            />
             <div className="p-6">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                 <div>

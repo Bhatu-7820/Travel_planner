@@ -45,7 +45,12 @@ export default function AdSection() {
           exit={{ opacity: 0, x: -20 }}
           className="absolute inset-0"
         >
-          <img src={ads[idx].image} alt={ads[idx].title} className="h-full w-full object-cover" />
+          <img
+            src={ads[idx].image}
+            alt={ads[idx].title}
+            className="h-full w-full object-cover"
+            onError={(e) => { e.target.style.display = 'none'; }}
+          />
           <div className={`absolute inset-0 bg-gradient-to-r ${ads[idx].color} opacity-60`}></div>
           <div className="absolute inset-0 flex flex-col justify-center p-8 text-white">
             <h3 className="text-3xl font-black">{ads[idx].title}</h3>

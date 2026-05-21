@@ -131,7 +131,12 @@ export default function Navbar() {
             >
               <div className="grid h-8 w-8 place-items-center overflow-hidden rounded-full bg-teal-500 text-sm font-bold text-white">
                 {user?.photoUrl ? (
-                  <img src={user.photoUrl} alt={user?.name} className="h-full w-full object-cover" />
+                  <img
+                    src={user.photoUrl}
+                    alt={user?.name}
+                    className="h-full w-full object-cover"
+                    onError={(e) => { e.target.style.display = 'none'; }}
+                  />
                 ) : (
                   getInitials(user?.name || 'U')
                 )}

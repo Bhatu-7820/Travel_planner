@@ -4,6 +4,7 @@ import { FiSearch, FiX, FiStar } from 'react-icons/fi';
 import { cityService } from '@/services/cityService';
 import { tripService } from '@/services/tripService';
 import { starString, getErrorMessage } from '@/utils/helpers';
+import SafeImage from '@/components/SafeImage';
 import toast from 'react-hot-toast';
 
 export default function CitySearchModal({ isOpen, onClose, trip, onAdded }) {
@@ -81,7 +82,7 @@ export default function CitySearchModal({ isOpen, onClose, trip, onAdded }) {
           {loading && <p className="text-sm text-slate-500">Searching cities...</p>}
           {!loading && cities.map((city) => (
             <div key={city.id} className="flex items-center gap-4 rounded-2xl border border-slate-100 p-3 dark:border-slate-800">
-              <img src={city.image} alt={city.name} className="h-16 w-20 rounded-2xl object-cover" />
+              <SafeImage src={city.image} alt={city.name} className="h-16 w-20 rounded-2xl object-cover" fallbackText={city.name[0]} />
               <div className="min-w-0 flex-1">
                 <h4 className="font-semibold">{city.name}</h4>
                 <p className="text-sm text-slate-500">{city.country}</p>

@@ -68,7 +68,12 @@ export default function ItineraryBuilder() {
         <>
           <div className="overflow-hidden rounded-[2rem] border border-white/20 bg-white shadow-soft dark:border-slate-800 dark:bg-slate-900">
             <div className="grid gap-0 lg:grid-cols-3">
-              <img src={trip.coverPhoto} alt={trip.name} className="h-64 w-full object-cover lg:col-span-1 lg:h-full" />
+              <img
+                src={trip.coverPhoto}
+                alt={trip.name}
+                className="h-64 w-full object-cover lg:col-span-1 lg:h-full"
+                onError={(e) => { e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(trip.name)}&background=14b8a6&color=fff&size=400&format=png`; }}
+              />
               <div className="p-6 lg:col-span-2">
                 <p className="text-sm uppercase tracking-[0.25em] text-slate-500">Itinerary Builder</p>
                 <h1 className="mt-2 text-4xl font-black">{trip.name}</h1>

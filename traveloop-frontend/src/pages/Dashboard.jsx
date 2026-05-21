@@ -7,6 +7,7 @@ import { cityService } from '@/services/cityService';
 import { estimateTripBudget, getErrorMessage, sortTripsByStartDate, upcomingTrips } from '@/utils/helpers';
 import TripCard from '@/components/TripCard';
 import AdSection from '@/components/AdSection';
+import SafeImage from '@/components/SafeImage';
 import toast from 'react-hot-toast';
 
 export default function Dashboard() {
@@ -137,7 +138,12 @@ export default function Dashboard() {
               <div key={index} className="h-64 animate-pulse rounded-3xl bg-slate-200 dark:bg-slate-800" />
             ) : (
               <div key={city.id} className="overflow-hidden rounded-3xl border border-white/20 bg-white shadow-soft dark:border-slate-800 dark:bg-slate-900">
-                <img src={city.image} alt={city.name} className="h-40 w-full object-cover" />
+                <SafeImage
+                  src={city.image}
+                  alt={city.name}
+                  className="h-40 w-full object-cover"
+                  fallbackText={city.name}
+                />
                 <div className="p-4">
                   <h3 className="font-bold">{city.name}</h3>
                   <p className="text-sm text-slate-500">{city.country}</p>
