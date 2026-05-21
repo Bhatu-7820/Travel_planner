@@ -86,8 +86,9 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => console.log(`SaaS Backend running on port ${PORT}`));
 
-// Handle unhandled promise rejections
-process.on('unhandledRejection', (err, promise) => {
-  console.log(`Error: ${err.message}`);
-  server.close(() => process.exit(1));
+// Handle unhandled promise rejections — log but don't crash the server
+process.on('unhandledRejection', (err) => {
+  console.error(`[UnhandledRejection] ${err?.message || err}`);
+  // Only exit on truly fatal errors (not network/API errors)
 });
+
