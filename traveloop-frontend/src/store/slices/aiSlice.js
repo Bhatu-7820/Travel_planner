@@ -170,7 +170,8 @@ const aiSlice = createSlice({
       })
       .addCase(fetchChatHistory.fulfilled, (state, action) => {
         state.chatStatus = 'succeeded';
-        state.chatHistory = action.payload;
+        // Always ensure chatHistory is an array
+        state.chatHistory = Array.isArray(action.payload) ? action.payload : [];
       })
       .addCase(fetchChatHistory.rejected, (state, action) => {
         state.chatStatus = 'failed';
@@ -191,11 +192,14 @@ const aiSlice = createSlice({
       // Send Chat Message
       .addCase(sendChatMessage.pending, (state, action) => {
         state.chatStatus = 'loading';
-        // Optimistically add user message to list
-        if (action.meta.arg.message) {
+        // Optimistically add user message with typing indicator
+        const msg = action.meta?.arg?.message;
+        if (msg) {
+          if (!Array.isArray(state.chatHistory)) state.chatHistory = [];
           state.chatHistory.push({
+            _id: `temp_${Date.now()}`,
             userId: 'me',
-            message: action.meta.arg.message,
+            message: msg,
             reply: '...',
             createdAt: new Date().toISOString()
           });
@@ -203,19 +207,22 @@ const aiSlice = createSlice({
       })
       .addCase(sendChatMessage.fulfilled, (state, action) => {
         state.chatStatus = 'succeeded';
-        // Replace temporary optimistic message
-        if (state.chatHistory.length > 0) {
+        if (!Array.isArray(state.chatHistory)) state.chatHistory = [];
+        // Replace the last optimistic message with real response
+        if (action.payload && state.chatHistory.length > 0) {
           state.chatHistory[state.chatHistory.length - 1] = action.payload;
-        } else {
+        } else if (action.payload) {
           state.chatHistory.push(action.payload);
         }
       })
       .addCase(sendChatMessage.rejected, (state, action) => {
         state.chatStatus = 'failed';
         state.error = action.payload;
+        if (!Array.isArray(state.chatHistory)) state.chatHistory = [];
+        // Update the last optimistic message to show the error
         if (state.chatHistory.length > 0) {
-          state.chatHistory[state.chatHistory.length - 1].reply = 
-            `Error: ${action.payload || 'Failed to send message.'}`;
+          const last = state.chatHistory[state.chatHistory.length - 1];
+          if (last) last.reply = `⚠️ ${action.payload || 'AI unavailable. Please try again.'}`;
         }
       })
       // Generate Itinerary
