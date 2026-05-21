@@ -164,6 +164,7 @@ export default function ItineraryBuilder() {
           onClose={() => setActivityStop(null)}
           tripId={trip.id}
           stopId={activityStop.id}
+          city={activityStop.city}
           onAdded={loadTrip}
         />
       )}

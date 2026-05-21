@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+// In production (Netlify), VITE_API_URL points to Railway backend.
+// In local dev, empty string uses Vite's proxy (/api → localhost:3001).
 const api = axios.create({
-  baseURL: '', // Use relative paths to leverage Vite proxy and same-origin cookies
+  baseURL: import.meta.env.VITE_API_URL || '',
   withCredentials: true, // Crucial for sending httpOnly cookies
   headers: {
     'Content-Type': 'application/json',
@@ -9,6 +11,10 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('traveloop_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
   return config;
 });
 
@@ -17,6 +23,7 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('traveloop_user');
+      localStorage.removeItem('traveloop_token');
     }
     return Promise.reject(error);
   }

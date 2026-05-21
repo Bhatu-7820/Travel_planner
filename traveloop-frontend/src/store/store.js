@@ -4,6 +4,7 @@ import tripReducer from './slices/tripSlice';
 import uiReducer from './slices/uiSlice';
 import notificationReducer from './slices/notificationSlice';
 import supportReducer from './slices/supportSlice';
+import aiReducer from './slices/aiSlice';
 
 export const store = configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export const store = configureStore({
     ui: uiReducer,
     notifications: notificationReducer,
     support: supportReducer,
+    ai: aiReducer,
   },
 });

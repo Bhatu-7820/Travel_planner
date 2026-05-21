@@ -1,8 +1,10 @@
 [build]
+  base    = "traveloop-frontend"
   command = "npm run build"
   publish = "dist"
 
+# React Router — serve index.html for all routes (SPA)
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
+  from   = "/*"
+  to     = "/index.html"
   status = 200

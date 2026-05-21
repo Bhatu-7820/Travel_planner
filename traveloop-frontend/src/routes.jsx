@@ -19,6 +19,7 @@ import Support from '@/pages/Support';
 import AgentMarketplace from '@/pages/AgentMarketplace';
 import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
+import AIHub from '@/pages/AIHub';
 
 import AIAssistant from '@/components/AIAssistant';
 
@@ -51,6 +52,7 @@ export default function AppRoutes() {
         }
       >
         <Route path="/" element={<Dashboard />} />
+        <Route path="/ai-hub" element={<AIHub />} />
         <Route path="/create-trip" element={<CreateTrip />} />
         <Route path="/my-trips" element={<MyTrips />} />
         <Route path="/trip/:id/builder" element={<ItineraryBuilder />} />

@@ -3,15 +3,16 @@ import { createPortal } from 'react-dom';
 import { FiX, FiPlus } from 'react-icons/fi';
 import { activityService } from '@/services/activityService';
 import { tripService } from '@/services/tripService';
+import { aiService } from '@/services/aiService';
 import { getErrorMessage } from '@/utils/helpers';
 import toast from 'react-hot-toast';
 
 const types = ['All', 'Sightseeing', 'Culture', 'Food', 'Relaxation', 'Adventure', 'Transport', 'Nightlife'];
 
-export default function ActivityPicker({ isOpen, onClose, tripId, stopId, onAdded }) {
+export default function ActivityPicker({ isOpen, onClose, tripId, stopId, city, onAdded }) {
   const [activities, setActivities] = useState([]);
   const [type, setType] = useState('All');
-  const [maxCost, setMaxCost] = useState(100);
+  const [maxCost, setMaxCost] = useState(5000);
   const [custom, setCustom] = useState({ name: '', cost: '' });
   const [loading, setLoading] = useState(false);
   const [generatingAI, setGeneratingAI] = useState(false);
@@ -22,8 +23,9 @@ export default function ActivityPicker({ isOpen, onClose, tripId, stopId, onAdde
       try {
         setLoading(true);
         const data = await activityService.getActivities({
+          city,
           ...(type !== 'All' ? { type } : {}),
-          ...(maxCost ? { maxCost } : {}),
+          ...(maxCost < 10000 ? { maxCost } : {}),
         });
         setActivities(data);
       } catch (error) {
@@ -33,13 +35,19 @@ export default function ActivityPicker({ isOpen, onClose, tripId, stopId, onAdde
       }
     };
     load();
-  }, [isOpen, type, maxCost]);
+  }, [isOpen, type, maxCost, city]);
 
   if (!isOpen) return null;
 
   const addActivity = async (activity) => {
     try {
-      await tripService.addActivityToStop(tripId, stopId, { activityId: activity.id });
+      await tripService.addActivityToStop(tripId, stopId, {
+        name: activity.name,
+        cost: activity.cost || 0,
+        type: activity.type || 'Sightseeing',
+        duration: activity.duration || '2h',
+        description: activity.description || ''
+      });
       toast.success('Activity added');
       onAdded?.();
       onClose();
@@ -69,19 +77,10 @@ export default function ActivityPicker({ isOpen, onClose, tripId, stopId, onAdde
   const generateAIActivities = async () => {
     try {
       setGeneratingAI(true);
-      const city = prompt("Which city are you looking for activities in?");
-      if (!city) return;
+      const targetCity = city || prompt("Which city are you looking for activities in?");
+      if (!targetCity) return;
       
-      const res = await fetch(`http://localhost:3000/api/ai/generate`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('traveloop_token')}`
-        },
-        body: JSON.stringify({ city, duration: '2 days' })
-      });
-      if (!res.ok) throw new Error('Failed to generate');
-      const data = await res.json();
+      const data = await aiService.generateActivities({ city: targetCity, duration: '2 days' });
       
       const aiActivities = data.map(a => ({ ...a, id: `ai_${Math.random()}` }));
       setActivities(prev => [...aiActivities, ...prev]);
@@ -118,9 +117,9 @@ export default function ActivityPicker({ isOpen, onClose, tripId, stopId, onAdde
           <label className="md:col-span-2">
             <div className="mb-1 flex items-center justify-between text-sm text-slate-500">
               <span>Maximum cost</span>
-              <span>₹{maxCost}</span>
+              <span>{maxCost >= 10000 ? 'Any budget' : `₹${maxCost}`}</span>
             </div>
-            <input type="range" min="0" max="200" value={maxCost} onChange={(e) => setMaxCost(Number(e.target.value))} className="w-full" />
+            <input type="range" min="0" max="10000" step="500" value={maxCost} onChange={(e) => setMaxCost(Number(e.target.value))} className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer dark:bg-slate-700 accent-teal-500" />
           </label>
         </div>
 

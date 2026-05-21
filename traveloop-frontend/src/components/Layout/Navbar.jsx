@@ -34,6 +34,7 @@ export default function Navbar() {
   const navItems = useMemo(
     () => [
       { to: '/', label: 'Dashboard' },
+      { to: '/ai-hub', label: 'AI Lab' },
       { to: '/my-trips', label: 'My Trips' },
       { to: '/create-trip', label: 'Create Trip' },
       { to: '/agents', label: 'Agents' },
@@ -71,7 +72,14 @@ export default function Navbar() {
         <nav className="hidden items-center gap-2 lg:flex">
           {navItems.map((item) => (
             <NavLink key={item.to} to={item.to} className={navLinkClass}>
-              {item.label}
+              <span className="flex items-center gap-1">
+                {item.label}
+                {item.label === 'AI Lab' && (
+                  <span className="rounded bg-gradient-to-r from-teal-400 to-indigo-500 px-1 py-0.2 text-[8px] font-black text-white shadow-soft">
+                    AI
+                  </span>
+                )}
+              </span>
             </NavLink>
           ))}
         </nav>
@@ -168,7 +176,14 @@ export default function Navbar() {
           <div className="flex flex-col gap-2">
             {navItems.map((item) => (
               <NavLink key={item.to} to={item.to} className={navLinkClass} onClick={() => setMobileOpen(false)}>
-                {item.label}
+                <span className="flex items-center gap-1">
+                  {item.label}
+                  {item.label === 'AI Lab' && (
+                    <span className="rounded bg-gradient-to-r from-teal-400 to-indigo-500 px-1 py-0.2 text-[8px] font-black text-white shadow-soft">
+                      AI
+                    </span>
+                  )}
+                </span>
               </NavLink>
             ))}
             <button

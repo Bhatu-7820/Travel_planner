@@ -26,10 +26,14 @@ const authSlice = createSlice({
     logout(state) {
       state.user = null;
       localStorage.removeItem('traveloop_user');
+      localStorage.removeItem('traveloop_token');
     },
     setCredentials(state, action) {
       state.user = action.payload.user;
       localStorage.setItem('traveloop_user', JSON.stringify(action.payload.user));
+      if (action.payload.token) {
+        localStorage.setItem('traveloop_token', action.payload.token);
+      }
     },
     updateProfile(state, action) {
       state.user = action.payload;
@@ -41,6 +45,9 @@ const authSlice = createSlice({
       state.status = 'succeeded';
       state.user = action.payload.user;
       localStorage.setItem('traveloop_user', JSON.stringify(action.payload.user));
+      if (action.payload.token) {
+        localStorage.setItem('traveloop_token', action.payload.token);
+      }
     };
 
     builder
@@ -72,6 +79,7 @@ const authSlice = createSlice({
         state.status = 'failed';
         state.user = null;
         localStorage.removeItem('traveloop_user');
+        localStorage.removeItem('traveloop_token');
       });
   },
 });
