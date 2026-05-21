@@ -41,7 +41,36 @@ io.on('connection', (socket) => {
 // Middleware Setup
 app.use(express.json());
 app.use(cookieParser());
-app.use(helmet());
+
+// Helmet with custom CSP — allows external images (Unsplash, Google, etc.)
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+      fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+      imgSrc: [
+        "'self'",
+        'data:',
+        'blob:',
+        'https://images.unsplash.com',
+        'https://*.unsplash.com',
+        'https://ui-avatars.com',
+        'https://lh3.googleusercontent.com',  // Google profile photos
+        'https://*.googleusercontent.com',
+        'https://avatars.githubusercontent.com',
+        'https://*.cloudinary.com',
+        'https://res.cloudinary.com',
+        'https://firebasestorage.googleapis.com',
+        'https://*.firebase.com',
+        '*',                                   // Allow all image origins
+      ],
+      connectSrc: ["'self'", 'https://api.groq.com', 'https://api.deepseek.com', 'wss:', 'ws:'],
+    },
+  },
+  crossOriginEmbedderPolicy: false,            // Required for external images to load
+}));
 
 // CORS — allow Netlify in prod, localhost in dev
 const allowedOrigins = [

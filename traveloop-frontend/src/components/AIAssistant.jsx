@@ -170,7 +170,9 @@ export default function AIAssistant() {
                             </div>
                           ) : (
                             <Suspense fallback={<span>{msg.reply}</span>}>
-                              <ReactMarkdown className="markdown-content">{msg.reply}</ReactMarkdown>
+                              <div className="markdown-content">
+                                <ReactMarkdown>{msg.reply}</ReactMarkdown>
+                              </div>
                             </Suspense>
                           )}
                         </div>
