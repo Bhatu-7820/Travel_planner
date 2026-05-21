@@ -24,8 +24,9 @@ function getFirebaseAdmin() {
     const serviceAccount = require('../serviceAccountKey.json');
 
     // Validate the private key before attempting init
-    if (!serviceAccount.private_key || !serviceAccount.private_key.includes('BEGIN')) {
-      throw new Error('serviceAccountKey.json has invalid private_key format');
+    if (!serviceAccount.private_key || serviceAccount.private_key.length < 100) {
+      // Empty or placeholder key — Firebase Admin not configured
+      throw new Error('SKIP: serviceAccountKey.json is a placeholder');
     }
 
     // Fix newlines in private key (common issue when copying from .env)
@@ -40,15 +41,14 @@ function getFirebaseAdmin() {
     return adminInstance;
 
   } catch (err) {
-    // Expected: serviceAccountKey.json missing or invalid — push notifications disabled
-    // App continues to work normally without Firebase Admin
-    const isExpected = 
-      err.message.includes('Cannot find module') || 
-      err.message.includes('invalid') ||
-      err.message.includes('PEM') ||
-      err.message.includes('FIREBASE_APP_NOT_FOUND');
+    // Expected cases — Firebase Admin not needed for core features
+    const isSilent = 
+      err.message.startsWith('SKIP:') ||
+      err.message.includes('Cannot find module');
     
-    if (!isExpected) console.warn('[Firebase Admin] Init skipped:', err.message);
+    if (!isSilent) {
+      console.warn('[Firebase Admin] Not initialized:', err.message);
+    }
     
     // Return safe stub — callers won't crash
     adminInstance = {

@@ -9,16 +9,42 @@ const { Server } = require('socket.io');
 const connectDB = require('./config/db');
 const errorHandler = require('./middlewares/error');
 
-// Connect Database
+// ─── Process-level crash guards (MUST be first) ────────────────────────────
+
+// Never crash on unhandled promise rejections (e.g. Firebase async errors)
+process.on('unhandledRejection', (err) => {
+  console.warn('[UnhandledRejection] Caught:', err?.message || err);
+  // Don't exit — keep the server alive
+});
+
+// Never crash on uncaught sync exceptions (last resort safety net)
+process.on('uncaughtException', (err) => {
+  console.error('[UncaughtException]', err?.message || err);
+  // Don't exit for non-fatal errors
+});
+
+// ─── Database ──────────────────────────────────────────────────────────────
 connectDB();
 
+// ─── App & Server ──────────────────────────────────────────────────────────
 const app = express();
 const server = http.createServer(app);
 
-// Socket.io
+// ─── Socket.io ─────────────────────────────────────────────────────────────
+const allowedOrigins = [
+  'http://localhost:5174',
+  'http://localhost:5175',
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
 const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || 'http://localhost:5174',
+    origin: (origin, cb) => {
+      if (!origin || allowedOrigins.includes(origin) || /\.netlify\.app$/.test(origin)) {
+        return cb(null, true);
+      }
+      cb(new Error(`Socket CORS: ${origin} not allowed`));
+    },
     credentials: true
   }
 });
@@ -26,98 +52,85 @@ const io = new Server(server, {
 app.set('io', io);
 
 io.on('connection', (socket) => {
-  console.log(`User connected: ${socket.id}`);
-  
   socket.on('join_user_room', (userId) => {
-    socket.join(userId);
-    console.log(`User ${userId} joined their personal room`);
+    if (userId) socket.join(userId);
   });
-
-  socket.on('disconnect', () => {
-    console.log(`User disconnected: ${socket.id}`);
-  });
+  socket.on('disconnect', () => {});
 });
 
-// Middleware Setup
-app.use(express.json());
+// ─── Middleware ─────────────────────────────────────────────────────────────
+app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
 
-// Helmet with custom CSP — allows external images (Unsplash, Google, etc.)
+// Helmet — CSP allows external images (Unsplash, Google, Firebase, etc.)
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'"],
-      styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
-      fontSrc: ["'self'", 'https://fonts.gstatic.com'],
-      imgSrc: [
-        "'self'",
-        'data:',
-        'blob:',
-        'https://images.unsplash.com',
-        'https://*.unsplash.com',
-        'https://ui-avatars.com',
-        'https://lh3.googleusercontent.com',  // Google profile photos
-        'https://*.googleusercontent.com',
-        'https://avatars.githubusercontent.com',
-        'https://*.cloudinary.com',
-        'https://res.cloudinary.com',
-        'https://firebasestorage.googleapis.com',
-        'https://*.firebase.com',
-        '*',                                   // Allow all image origins
-      ],
-      connectSrc: ["'self'", 'https://api.groq.com', 'https://api.deepseek.com', 'wss:', 'ws:'],
+      defaultSrc:      ["'self'"],
+      scriptSrc:       ["'self'", "'unsafe-inline'"],
+      styleSrc:        ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+      fontSrc:         ["'self'", 'https://fonts.gstatic.com', 'data:'],
+      imgSrc:          ["'self'", 'data:', 'blob:', '*'],   // allow ALL image origins
+      connectSrc:      ["'self'", 'https:', 'wss:', 'ws:'],
+      mediaSrc:        ["'self'", 'blob:', '*'],
+      frameSrc:        ["'none'"],
     },
   },
-  crossOriginEmbedderPolicy: false,            // Required for external images to load
+  crossOriginEmbedderPolicy: false,  // needed for cross-origin images/resources
 }));
 
-// CORS — allow Netlify in prod, localhost in dev
-const allowedOrigins = [
-  'http://localhost:5174',
-  'http://localhost:5175',
-  process.env.FRONTEND_URL,
-].filter(Boolean); // remove undefined if FRONTEND_URL not set
-
+// CORS
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (e.g., curl, Postman, Railway health checks)
     if (!origin) return callback(null, true);
     if (allowedOrigins.includes(origin)) return callback(null, true);
-    // Also allow any *.netlify.app subdomain (preview deploys)
     if (/\.netlify\.app$/.test(origin)) return callback(null, true);
+    if (/\.onrender\.com$/.test(origin)) return callback(null, true);
     callback(new Error(`CORS: origin ${origin} not allowed`));
   },
   credentials: true
 }));
 
 // Rate limiting
-const limiter = rateLimit({
-  windowMs: 10 * 60 * 1000, // 10 mins
-  max: 500 // limit each IP to 500 requests per windowMs
-});
-app.use(limiter);
+app.use(rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 500,
+  standardHeaders: true,
+  legacyHeaders: false,
+}));
 
-// Routes
-app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/admin', require('./routes/adminRoutes'));
-app.use('/api/trips', require('./routes/tripRoutes'));
-app.use('/api/support', require('./routes/supportRoutes'));
+// ─── Health check ──────────────────────────────────────────────────────────
+app.get('/health', (req, res) => res.json({ status: 'ok', uptime: process.uptime() }));
+
+// ─── Routes ────────────────────────────────────────────────────────────────
+app.use('/api/auth',          require('./routes/authRoutes'));
+app.use('/api/admin',         require('./routes/adminRoutes'));
+app.use('/api/trips',         require('./routes/tripRoutes'));
+app.use('/api/support',       require('./routes/supportRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
 app.use('/api/user/requests', require('./routes/requestRoutes'));
-app.use('/api/cities', require('./routes/cityRoutes'));
-app.use('/api/ai', require('./routes/aiRoutes'));
-app.use('/api/activities', require('./routes/activityRoutes'));
+app.use('/api/cities',        require('./routes/cityRoutes'));
+app.use('/api/ai',            require('./routes/aiRoutes'));
+app.use('/api/activities',    require('./routes/activityRoutes'));
 
-// Global Error Handler
+// ─── Global Error Handler ──────────────────────────────────────────────────
 app.use(errorHandler);
 
+// ─── Start Server ──────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 3001;
-server.listen(PORT, () => console.log(`SaaS Backend running on port ${PORT}`));
 
-// Handle unhandled promise rejections — log but don't crash the server
-process.on('unhandledRejection', (err) => {
-  console.error(`[UnhandledRejection] ${err?.message || err}`);
-  // Only exit on truly fatal errors (not network/API errors)
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`[Server] Port ${PORT} already in use. Retrying in 3 seconds...`);
+    setTimeout(() => {
+      server.close();
+      server.listen(PORT);
+    }, 3000);
+  } else {
+    console.error('[Server] Error:', err.message);
+  }
 });
 
+server.listen(PORT, () => {
+  console.log(`✅ SaaS Backend running on port ${PORT}`);
+});
