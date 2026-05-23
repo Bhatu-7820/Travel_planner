@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const Trip = require('../models/Trip');
 const AgentRequest = require('../models/AgentRequest');
+const Notification = require('../models/Notification');
 const mongoose = require('mongoose');
 const { logAction } = require('../controllers/auditLogController');
 
@@ -121,14 +122,17 @@ exports.updateRequest = async (req, res, next) => {
 
     await logAction(req.user.id, 'UPDATE_REQUEST', 'AgentRequest', id, `Status set to ${status}`, req.ip);
 
-    // Notify user
+    // Persist notification to DB and emit via Socket.io
+    const notifData = {
+      userId: request.userId,
+      title: 'Agent Request Update',
+      message: `Your planning request has been ${request.status}.`,
+      type: 'system',
+    };
+    const savedNotif = await Notification.create(notifData);
     const io = req.app.get('io');
     if (io) {
-      io.to(request.userId.toString()).emit('new_notification', {
-        title: 'Agent Request Update',
-        message: `Your planning request has been ${request.status}.`,
-        type: 'agent'
-      });
+      io.to(request.userId.toString()).emit('new_notification', savedNotif);
     }
 
     res.status(200).json(request);

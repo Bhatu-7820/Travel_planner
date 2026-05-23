@@ -1,4 +1,5 @@
 const { SupportTicket, Coupon } = require('../models/Support');
+const Notification = require('../models/Notification');
 
 exports.createTicket = async (req, res, next) => {
   try {
@@ -38,14 +39,17 @@ exports.updateTicketStatus = async (req, res, next) => {
   try {
     const ticket = await SupportTicket.findByIdAndUpdate(req.params.id, { status: req.body.status }, { new: true });
     
-    // Notify user via Socket.io
+    // Persist notification to DB and emit via Socket.io
+    const notifData = {
+      userId: ticket.userId,
+      title: 'Ticket Updated',
+      message: `Your ticket "${ticket.subject}" is now ${ticket.status}.`,
+      type: 'support',
+    };
+    const savedNotif = await Notification.create(notifData);
     const io = req.app.get('io');
     if (io) {
-      io.to(ticket.userId.toString()).emit('new_notification', {
-        title: 'Ticket Updated',
-        message: `Your ticket "${ticket.subject}" is now ${ticket.status}.`,
-        type: 'support'
-      });
+      io.to(ticket.userId.toString()).emit('new_notification', savedNotif);
     }
 
     res.status(200).json(ticket);

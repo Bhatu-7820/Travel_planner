@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { FiMoon, FiSun, FiChevronDown, FiLogOut, FiMenu, FiX, FiUser, FiBell } from 'react-icons/fi';
+import { FiMoon, FiSun, FiChevronDown, FiLogOut, FiMenu, FiX, FiUser, FiBell, FiCheck, FiTrash2 } from 'react-icons/fi';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '@/store/slices/authSlice';
 import { toggleTheme } from '@/store/slices/uiSlice';
+import { fetchNotifications, markAsRead, markAllAsRead, deleteNotification } from '@/store/slices/notificationSlice';
 import { authService } from '@/services/authService';
 import { getInitials, cn } from '@/utils/helpers';
 import toast from 'react-hot-toast';
@@ -24,8 +25,32 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { items: notifications } = useSelector((state) => state.notifications || { items: [] });
+  const { items: notifications, status: notifStatus } = useSelector((state) => state.notifications || { items: [], status: 'idle' });
   const unreadCount = notifications.filter(n => !n.read).length;
+
+  const notifRef = useRef(null);
+  const profileRef = useRef(null);
+
+  // Fetch notifications on mount and when user logs in
+  useEffect(() => {
+    if (user && notifStatus === 'idle') {
+      dispatch(fetchNotifications());
+    }
+  }, [user, notifStatus, dispatch]);
+
+  // Close dropdowns on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (notifRef.current && !notifRef.current.contains(e.target)) {
+        setNotifOpen(false);
+      }
+      if (profileRef.current && !profileRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
@@ -54,6 +79,20 @@ export default function Navbar() {
     dispatch(logout());
     toast.success('Logged out successfully');
     navigate('/login');
+  };
+
+  const handleMarkAsRead = (e, id) => {
+    e.stopPropagation();
+    dispatch(markAsRead(id));
+  };
+
+  const handleDelete = (e, id) => {
+    e.stopPropagation();
+    dispatch(deleteNotification(id));
+  };
+
+  const handleMarkAllAsRead = () => {
+    dispatch(markAllAsRead());
   };
 
   return (
@@ -93,38 +132,100 @@ export default function Navbar() {
             {theme === 'dark' ? <FiSun /> : <FiMoon />}
           </button>
 
-          <div className="relative">
+          {/* Notification Bell */}
+          <div className="relative" ref={notifRef}>
             <button
               onClick={() => setNotifOpen((v) => !v)}
               className="relative grid h-10 w-10 place-items-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:-translate-y-0.5 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+              aria-label="Notifications"
             >
               <FiBell />
               {unreadCount > 0 && (
-                <span className="absolute top-0 right-0 grid h-4 w-4 place-items-center rounded-full bg-red-500 text-[10px] font-bold text-white">
-                  {unreadCount}
+                <span className="absolute -top-0.5 -right-0.5 grid h-4 w-4 place-items-center rounded-full bg-red-500 text-[10px] font-bold text-white animate-pulse">
+                  {unreadCount > 9 ? '9+' : unreadCount}
                 </span>
               )}
             </button>
+
             {notifOpen && (
               <div className="absolute right-0 mt-2 w-80 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-800 dark:bg-slate-900 z-50">
-                <div className="p-3 border-b border-slate-200 dark:border-slate-800 font-bold">Notifications</div>
-                <div className="max-h-64 overflow-y-auto">
-                  {notifications.length === 0 ? (
-                    <div className="p-4 text-sm text-slate-500 text-center">No notifications</div>
+                {/* Header */}
+                <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+                  <span className="font-bold text-sm">Notifications</span>
+                  {unreadCount > 0 && (
+                    <button
+                      onClick={handleMarkAllAsRead}
+                      className="flex items-center gap-1 text-xs text-teal-500 hover:text-teal-600 font-medium transition"
+                      title="Mark all as read"
+                    >
+                      <FiCheck size={14} />
+                      Mark all read
+                    </button>
+                  )}
+                </div>
+
+                {/* List */}
+                <div className="max-h-72 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800">
+                  {notifStatus === 'loading' ? (
+                    <div className="p-4 text-sm text-slate-500 text-center">Loading…</div>
+                  ) : notifications.length === 0 ? (
+                    <div className="p-6 text-sm text-slate-500 text-center flex flex-col items-center gap-2">
+                      <FiBell size={24} className="text-slate-300" />
+                      No notifications yet
+                    </div>
                   ) : (
                     notifications.map(n => (
-                      <div key={n._id} className={`p-3 text-sm border-b border-slate-100 dark:border-slate-800 ${n.read ? 'opacity-60' : 'bg-slate-50 dark:bg-slate-800/50'}`}>
-                        <p className="font-medium">{n.title}</p>
-                        <p className="text-xs text-slate-500">{n.message}</p>
+                      <div
+                        key={n._id}
+                        className={`group flex items-start gap-3 px-4 py-3 text-sm transition cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/60 ${
+                          n.read ? 'opacity-60' : 'bg-teal-50/50 dark:bg-teal-900/10'
+                        }`}
+                        onClick={(e) => !n.read && handleMarkAsRead(e, n._id)}
+                      >
+                        {/* Unread dot */}
+                        <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${n.read ? 'bg-transparent' : 'bg-teal-500'}`} />
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium truncate">{n.title}</p>
+                          <p className="text-xs text-slate-500 mt-0.5 line-clamp-2">{n.message}</p>
+                        </div>
+                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition shrink-0">
+                          {!n.read && (
+                            <button
+                              onClick={(e) => handleMarkAsRead(e, n._id)}
+                              className="p-1 rounded hover:bg-teal-100 dark:hover:bg-teal-900/30 text-teal-500"
+                              title="Mark as read"
+                            >
+                              <FiCheck size={13} />
+                            </button>
+                          )}
+                          <button
+                            onClick={(e) => handleDelete(e, n._id)}
+                            className="p-1 rounded hover:bg-red-100 dark:hover:bg-red-900/30 text-red-400"
+                            title="Delete"
+                          >
+                            <FiTrash2 size={13} />
+                          </button>
+                        </div>
                       </div>
                     ))
                   )}
+                </div>
+
+                {/* Footer refresh */}
+                <div className="border-t border-slate-200 dark:border-slate-700 px-4 py-2 text-center">
+                  <button
+                    onClick={() => dispatch(fetchNotifications())}
+                    className="text-xs text-slate-400 hover:text-teal-500 transition"
+                  >
+                    Refresh
+                  </button>
                 </div>
               </div>
             )}
           </div>
 
-          <div className="relative">
+          {/* Profile Dropdown */}
+          <div className="relative" ref={profileRef}>
             <button
               onClick={() => setOpen((v) => !v)}
               className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-2 py-1.5 shadow-sm dark:border-slate-700 dark:bg-slate-900"

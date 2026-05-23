@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
-const admin = require('../config/firebase');
+const https = require('https');
+const crypto = require('crypto');
 
 const sendTokenResponse = (user, statusCode, res) => {
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || 'super_secret_traveloop_key', {
@@ -147,22 +148,54 @@ exports.deleteMe = async (req, res, next) => {
   }
 };
 
+// Fetch Firebase public certs and verify ID token without Admin SDK
+function fetchFirebaseCerts() {
+  return new Promise((resolve, reject) => {
+    https.get('https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com', (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        try { resolve(JSON.parse(data)); }
+        catch (e) { reject(e); }
+      });
+    }).on('error', reject);
+  });
+}
+
+async function verifyFirebaseToken(idToken) {
+  const certs = await fetchFirebaseCerts();
+
+  // Decode header to get the key ID
+  const [headerB64] = idToken.split('.');
+  const header = JSON.parse(Buffer.from(headerB64, 'base64url').toString());
+  const cert = certs[header.kid];
+  if (!cert) throw new Error('Unknown Firebase cert kid');
+
+  // Verify using the public cert
+  const decoded = jwt.verify(idToken, cert, {
+    algorithms: ['RS256'],
+    audience: process.env.FIREBASE_PROJECT_ID || 'travelsoon-d6f26',
+    issuer: `https://securetoken.google.com/${process.env.FIREBASE_PROJECT_ID || 'travelsoon-d6f26'}`,
+  });
+
+  return decoded;
+}
+
 exports.firebaseLogin = async (req, res, next) => {
   try {
     const { idToken } = req.body;
     if (!idToken) return res.status(400).json({ message: 'No ID Token provided' });
 
-    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const decodedToken = await verifyFirebaseToken(idToken);
     const { email, name, picture, uid } = decodedToken;
 
     let user = await User.findOne({ email });
 
     if (!user) {
-      // Create new user if they don't exist
       user = await User.create({
         name: name || email.split('@')[0],
         email,
-        password: require('crypto').randomBytes(16).toString('hex'), // Dummy password for OAuth users
+        password: crypto.randomBytes(16).toString('hex'),
         photoUrl: picture,
         role: 'user'
       });
@@ -170,7 +203,7 @@ exports.firebaseLogin = async (req, res, next) => {
 
     sendTokenResponse(user, 200, res);
   } catch (error) {
-    console.error('Firebase Auth Error:', error);
+    console.error('Firebase Auth Error:', error.message);
     res.status(401).json({ message: 'Invalid or expired Firebase token' });
   }
 };
