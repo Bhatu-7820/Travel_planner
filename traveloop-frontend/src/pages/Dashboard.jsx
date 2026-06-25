@@ -159,7 +159,7 @@ export default function Dashboard() {
   const visibleDests = showAll ? filteredDests : filteredDests.slice(0, 18);
 
   return (
-    <div className="relative space-y-10 max-w-[1400px] mx-auto">
+    <div className="safe-container relative space-y-8 sm:space-y-10">
       {/* Ambient background blurs */}
       <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
         <div className="absolute -top-40 -left-40 h-[500px] w-[500px] rounded-full bg-teal-500/[0.04] blur-3xl animate-float-slow" />
@@ -171,7 +171,7 @@ export default function Dashboard() {
           HERO BANNER
       ══════════════════════════════════════════ */}
       <Reveal>
-        <section className="relative overflow-hidden rounded-3xl bg-white/40 dark:bg-slate-950/40 p-5 sm:p-6 text-slate-900 dark:text-white shadow-soft border border-white/50 dark:border-white/10 backdrop-blur-xl shadow-[0_0_50px_-12px_rgba(99,102,241,0.1)] dark:shadow-[0_0_50px_-12px_rgba(99,102,241,0.25)]">
+        <section className="responsive-card relative overflow-hidden bg-white/40 p-4 text-slate-900 shadow-soft shadow-[0_0_50px_-12px_rgba(99,102,241,0.1)] backdrop-blur-xl border border-white/50 dark:border-white/10 dark:bg-slate-950/40 dark:text-white dark:shadow-[0_0_50px_-12px_rgba(99,102,241,0.25)] sm:p-6">
           <div className="absolute top-0 right-0 p-6 text-[8rem] font-black text-indigo-500/[0.04] dark:text-white/[0.02] select-none pointer-events-none leading-none">T</div>
           
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
@@ -179,7 +179,7 @@ export default function Dashboard() {
               <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-500/10 dark:bg-white/10 border border-indigo-500/20 dark:border-white/20 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-indigo-700 dark:text-slate-200 mb-2.5">
                 <FiGlobe className="animate-spin-slow text-teal-500 dark:text-teal-400" /> Premium Travel Experience
               </span>
-              <h1 className="text-2xl sm:text-3xl font-black leading-tight flex flex-wrap items-center gap-2 text-slate-900 dark:text-white">
+              <h1 className="flex flex-wrap items-center gap-2 text-fluid-wrap text-2xl font-black leading-tight text-slate-900 dark:text-white sm:text-3xl">
                 Hello, {user?.name || 'Traveler'}
                 <motion.span
                   animate={{ rotate: [0, 20, -10, 20, 0] }}
@@ -192,7 +192,7 @@ export default function Dashboard() {
               <p className="mt-2 max-w-lg text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed">
                 Your smart companion for multi-city journeys, secure payments, and reliable travel planning.
               </p>
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div className="responsive-action-row mt-4">
                 <motion.button
                   onClick={() => navigate('/create-trip')}
                   whileHover={{ scale: 1.05, y: -2, boxShadow: '0 10px 20px -5px rgba(20,184,166,0.35)' }}
@@ -213,7 +213,7 @@ export default function Dashboard() {
             </div>
             
             {/* Reduced 3D Globe inside the Welcome card */}
-            <div className="w-full lg:w-[170px] h-[170px] lg:h-[170px] flex items-center justify-center shrink-0">
+            <div className="mx-auto flex h-[150px] w-full max-w-[180px] shrink-0 items-center justify-center sm:h-[170px] lg:mx-0 lg:w-[170px]">
               <Globe3D />
             </div>
           </div>
@@ -237,7 +237,7 @@ export default function Dashboard() {
           { label: 'TOTAL TRIPS', value: trips.length, icon: FiTrendingUp, gradient: 'from-orange-400 to-rose-400', glow: 'shadow-orange-400/10' },
         ].map((stat, i) => (
           <Reveal key={stat.label} delay={i * 0.08} direction="scale">
-            <div className={`group relative overflow-hidden rounded-[2rem] border border-white/50 dark:border-white/10 bg-white/40 dark:bg-slate-950/40 backdrop-blur-xl p-6 shadow-soft ${stat.glow} hover:-translate-y-1 hover:shadow-xl transition-all duration-300`}>
+            <div className={`responsive-card group relative overflow-hidden border border-white/50 bg-white/40 p-5 shadow-soft backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-white/10 dark:bg-slate-950/40 sm:p-6 ${stat.glow}`}>
               <div className={`absolute -top-8 -right-8 h-24 w-24 rounded-full bg-gradient-to-br ${stat.gradient} opacity-10 group-hover:opacity-20 transition-opacity blur-xl`} />
               <div className="relative z-10">
                 <div className="flex items-center gap-2 mb-2">
@@ -255,7 +255,7 @@ export default function Dashboard() {
           AI QUICK PLANNER
       ══════════════════════════════════════════ */}
       <Reveal direction="up">
-        <section className="rounded-3xl bg-white/40 dark:bg-slate-950/40 border border-white/50 dark:border-white/10 shadow-[0_0_50px_-12px_rgba(99,102,241,0.1)] dark:shadow-[0_0_50px_-12px_rgba(99,102,241,0.2)] p-6 sm:p-8 text-slate-900 dark:text-white backdrop-blur-xl">
+        <section className="responsive-card bg-white/40 p-4 text-slate-900 shadow-[0_0_50px_-12px_rgba(99,102,241,0.1)] backdrop-blur-xl border border-white/50 dark:border-white/10 dark:bg-slate-950/40 dark:text-white dark:shadow-[0_0_50px_-12px_rgba(99,102,241,0.2)] sm:p-6 lg:p-8">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-md">
               <div className="flex items-center gap-2 mb-1">
@@ -265,17 +265,17 @@ export default function Dashboard() {
               <h2 className="text-2xl font-black">Itinerary Planner</h2>
               <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Just enter a destination and let our automated planners draft a perfect multi-city plan for you.</p>
             </div>
-            <div className="flex flex-1 gap-2 max-w-xl">
+            <div className="flex w-full flex-col gap-2 sm:flex-row lg:max-w-xl">
               <input
                 type="text"
                 placeholder="Where do you want to go?"
-                className="flex-1 rounded-2xl border border-slate-300/60 dark:border-white/10 bg-slate-900/5 dark:bg-white/5 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 px-6 py-4 text-sm outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition-all backdrop-blur-sm"
+                className="min-w-0 flex-1 rounded-2xl border border-slate-300/60 bg-slate-900/5 px-4 py-3 text-sm text-slate-900 outline-none backdrop-blur-sm transition-all placeholder-slate-500 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder-slate-400 sm:px-6 sm:py-4"
               />
               <motion.button
                 onClick={() => navigate('/create-trip')}
                 whileHover={{ scale: 1.03, y: -2 }}
                 whileTap={{ scale: 0.97 }}
-                className="rounded-2xl bg-teal-500 px-8 py-4 font-bold text-white shadow-md shadow-teal-500/25 hover:bg-teal-600 transition-colors"
+                className="rounded-2xl bg-teal-500 px-6 py-3 font-bold text-white shadow-md shadow-teal-500/25 transition-colors hover:bg-teal-600 sm:px-8 sm:py-4"
               >
                 Draft Itinerary
               </motion.button>
@@ -289,7 +289,7 @@ export default function Dashboard() {
       ══════════════════════════════════════════ */}
       <section>
         <Reveal>
-          <div className="mb-5 flex items-end justify-between">
+          <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <FiCalendar className="text-teal-500" />
@@ -358,8 +358,8 @@ export default function Dashboard() {
 
         {/* Filters */}
         <Reveal delay={0.06} direction="up">
-          <div className="flex flex-col sm:flex-row gap-3 mb-5">
-            <div className="relative max-w-xs">
+          <div className="mb-5 flex flex-col gap-3 lg:flex-row lg:items-start">
+            <div className="relative w-full lg:max-w-xs">
               <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm" />
               <input
                 value={search}
@@ -368,14 +368,14 @@ export default function Dashboard() {
                 className="w-full rounded-2xl border border-white/50 dark:border-white/10 bg-white/40 dark:bg-slate-950/40 pl-10 pr-4 py-2.5 text-sm outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 dark:text-white transition-all backdrop-blur-xl"
               />
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="touch-scroll-x -mx-1 flex gap-2 px-1 pb-1 lg:flex-wrap lg:overflow-visible">
               {['All', ...CONTINENTS].map(c => (
                 <motion.button
                   key={c}
                   onClick={() => { setContinent(c); setShowAll(false); }}
                   whileHover={{ scale: 1.07, y: -2 }}
                   whileTap={{ scale: 0.94 }}
-                  className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-all ${
+                  className={`shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold transition-all ${
                     continent === c
                       ? 'bg-gradient-to-r from-teal-500 to-indigo-600 text-white shadow-md shadow-teal-500/20 border-0'
                       : 'border border-white/50 dark:border-white/10 bg-white/30 dark:bg-slate-950/30 text-slate-600 dark:text-slate-300 hover:border-teal-400 hover:text-teal-500 backdrop-blur-xl'
@@ -423,7 +423,7 @@ export default function Dashboard() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6"
+            className="grid gap-3 min-[420px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 sm:gap-4"
           >
             {visibleDests.map((dest, i) => (
               <Reveal key={dest.id} delay={Math.min(i * 0.025, 0.35)} direction="scale">

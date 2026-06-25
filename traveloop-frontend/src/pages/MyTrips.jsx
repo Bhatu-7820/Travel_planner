@@ -58,10 +58,10 @@ export default function MyTrips() {
   };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="safe-container space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-3xl font-black">My Trips</h1>
+          <h1 className="text-2xl font-black sm:text-3xl">My Trips</h1>
           <p className="text-sm text-slate-500">Manage your trips, stops, and details.</p>
         </div>
         <button onClick={() => navigate('/create-trip')} className="rounded-full bg-teal-500 px-5 py-3 font-semibold text-white shadow-soft">
@@ -88,8 +88,8 @@ export default function MyTrips() {
       </div>
 
       {editing && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 px-4">
-          <div className="w-full max-w-2xl rounded-3xl border border-white/50 dark:border-white/10 bg-white/80 dark:bg-slate-950/85 backdrop-blur-xl p-6 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/60 p-3 sm:p-4">
+          <div className="responsive-card my-auto max-h-[calc(100dvh-2rem)] w-full max-w-2xl overflow-y-auto border border-white/50 bg-white/80 p-4 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/85 sm:p-6">
             <h3 className="text-2xl font-black text-slate-900 dark:text-white">Edit Trip</h3>
             <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{formatDateRange(form.startDate, form.endDate)}</p>
             <div className="mt-5 grid gap-4">
@@ -101,7 +101,7 @@ export default function MyTrips() {
               <textarea value={form.description} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} rows="4" className="rounded-2xl border border-slate-300/60 dark:border-white/10 bg-slate-900/5 dark:bg-white/5 px-4 py-3 text-slate-900 dark:text-white focus:border-teal-500 focus:outline-none transition-all backdrop-blur-sm" />
               <input value={form.coverPhoto} onChange={(e) => setForm((p) => ({ ...p, coverPhoto: e.target.value }))} className="rounded-2xl border border-slate-300/60 dark:border-white/10 bg-slate-900/5 dark:bg-white/5 px-4 py-3 text-slate-900 dark:text-white focus:border-teal-500 focus:outline-none transition-all backdrop-blur-sm" />
             </div>
-            <div className="mt-6 flex flex-wrap justify-end gap-3">
+            <div className="responsive-action-row mt-6 justify-end">
               <button onClick={() => setEditing(null)} className="rounded-full border border-slate-200 px-5 py-2 font-semibold dark:border-slate-700">Cancel</button>
               <button onClick={saveEdit} disabled={saving} className="rounded-full bg-teal-500 px-5 py-2 font-semibold text-white">
                 {saving ? 'Saving...' : 'Save'}

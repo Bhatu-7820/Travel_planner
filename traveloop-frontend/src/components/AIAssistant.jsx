@@ -76,24 +76,24 @@ export default function AIAssistant() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-4 right-4 z-50 sm:bottom-6 sm:right-6">
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="mb-4 h-[550px] w-80 overflow-hidden rounded-[2rem] border border-white/20 bg-white shadow-2xl backdrop-blur-xl dark:border-slate-800 dark:bg-slate-900/95 sm:w-96 flex flex-col"
+            className="mb-3 flex h-[min(620px,calc(100dvh-6.5rem))] w-[calc(100vw-2rem)] max-w-sm flex-col overflow-hidden rounded-[1.5rem] border border-white/20 bg-white shadow-2xl backdrop-blur-xl dark:border-slate-800 dark:bg-slate-900/95 sm:mb-4 sm:w-96 sm:rounded-[2rem]"
           >
             {/* Header */}
-            <div className="flex items-center justify-between bg-gradient-to-r from-teal-500 via-blue-500 to-indigo-600 p-4 text-white">
-              <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between gap-3 bg-gradient-to-r from-teal-500 via-blue-500 to-indigo-600 p-3 text-white sm:p-4">
+              <div className="flex min-w-0 items-center gap-2">
                 <div className="grid h-8 w-8 place-items-center rounded-full bg-white/20 animate-pulse">
                   <FiInfo className="text-sm" />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <span className="font-bold block text-sm sm:text-base leading-none">Traveloop</span>
-                  <span className="text-[10px] text-white/80">Premium Travel Companion</span>
+                  <span className="block truncate text-[10px] text-white/80">Premium Travel Companion</span>
                 </div>
               </div>
               <div className="flex items-center gap-1">
@@ -117,7 +117,7 @@ export default function AIAssistant() {
 
             {/* Context Badge */}
             {activeTripContext && (
-              <div className="bg-teal-500/10 dark:bg-teal-500/20 text-teal-600 dark:text-teal-400 px-4 py-1.5 text-xs border-b border-teal-500/15 flex items-center justify-between">
+              <div className="flex items-center justify-between gap-2 border-b border-teal-500/15 bg-teal-500/10 px-3 py-1.5 text-xs text-teal-600 dark:bg-teal-500/20 dark:text-teal-400 sm:px-4">
                 <span className="truncate">Context: Active Trip <b>{activeTripContext.tripName}</b></span>
                 <span className="shrink-0 bg-teal-500 text-white rounded-full px-1.5 py-0.5 text-[8px] font-bold">ACTIVE</span>
               </div>
@@ -126,7 +126,7 @@ export default function AIAssistant() {
             {/* Message Area */}
             <div 
               ref={scrollRef} 
-              className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide dark:bg-slate-950/40"
+              className="flex-1 space-y-4 overflow-y-auto p-3 scrollbar-hide dark:bg-slate-950/40 sm:p-4"
             >
               {!user ? (
                 <div className="flex flex-col items-center justify-center h-full text-center p-6 space-y-4">
@@ -186,14 +186,14 @@ export default function AIAssistant() {
             {/* Form Input */}
             <form 
               onSubmit={handleSend} 
-              className="border-t border-slate-100 bg-white p-4 dark:border-slate-800 dark:bg-slate-900"
+              className="border-t border-slate-100 bg-white p-3 dark:border-slate-800 dark:bg-slate-900 sm:p-4"
             >
               <div className="flex gap-2">
                 <input
                   value={message}
                   onChange={e => setMessage(e.target.value)}
                   placeholder={user ? "Ask about hotels, packing, weather..." : "Please log in to chat..."}
-                  className="flex-1 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-teal-500 focus:bg-white dark:border-slate-700 dark:bg-slate-950 dark:focus:bg-slate-950 transition"
+                  className="min-w-0 flex-1 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-teal-500 focus:bg-white dark:border-slate-700 dark:bg-slate-950 dark:focus:bg-slate-950"
                   disabled={chatStatus === 'loading' || !user}
                 />
                 <button 
@@ -211,7 +211,7 @@ export default function AIAssistant() {
 
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="grid h-14 w-14 place-items-center rounded-full bg-gradient-to-br from-teal-500 to-blue-500 text-2xl text-white shadow-lg transition hover:scale-110 active:scale-95 shadow-teal-500/25"
+        className="grid h-12 w-12 place-items-center rounded-full bg-gradient-to-br from-teal-500 to-blue-500 text-xl text-white shadow-lg shadow-teal-500/25 transition hover:scale-110 active:scale-95 sm:h-14 sm:w-14 sm:text-2xl"
       >
         <FiMessageSquare />
       </button>

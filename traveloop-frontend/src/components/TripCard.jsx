@@ -3,9 +3,9 @@ import { formatDateRange } from '@/utils/helpers';
 
 export default function TripCard({ trip, onEdit, onDelete, onView, onBuilder, compact = false }) {
   return (
-    <article className="group overflow-hidden rounded-[2rem] border border-white/50 dark:border-white/10 bg-white/40 dark:bg-slate-950/40 shadow-soft backdrop-blur-xl hover:-translate-y-1 hover:shadow-xl hover:border-teal-500/30 transition-all duration-300">
+    <article className="responsive-card group overflow-hidden border border-white/50 bg-white/40 shadow-soft backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-teal-500/30 hover:shadow-xl dark:border-white/10 dark:bg-slate-950/40">
       <div className="grid gap-0 md:grid-cols-3">
-        <div className="relative min-h-48 md:col-span-1 overflow-hidden">
+        <div className="relative min-h-44 overflow-hidden sm:min-h-48 md:col-span-1">
           <img
             src={trip.coverPhoto}
             alt={trip.name}
@@ -23,15 +23,15 @@ export default function TripCard({ trip, onEdit, onDelete, onView, onBuilder, co
                 {compact ? 'Trip' : 'Upcoming'}
               </span>
             </div>
-            <h3 className="mt-3 text-xl font-bold">{trip.name}</h3>
+            <h3 className="mt-3 text-fluid-wrap text-xl font-bold">{trip.name}</h3>
             <p className="mt-2 line-clamp-2 text-sm text-slate-600 dark:text-slate-300">{trip.description || 'No description yet.'}</p>
-            <div className="mt-4 flex flex-wrap gap-4 text-sm text-slate-500 dark:text-slate-400">
-              <span className="flex items-center gap-2"><FiCalendar /> {formatDateRange(trip.startDate, trip.endDate)}</span>
-              <span className="flex items-center gap-2"><FiMapPin /> {(trip.stops || []).map((s) => s.city).slice(0, 2).join(', ') || 'No stops yet'}</span>
+            <div className="mt-4 flex flex-col gap-2 text-sm text-slate-500 dark:text-slate-400 sm:flex-row sm:flex-wrap sm:gap-4">
+              <span className="flex min-w-0 items-center gap-2"><FiCalendar className="shrink-0" /> <span className="truncate">{formatDateRange(trip.startDate, trip.endDate)}</span></span>
+              <span className="flex min-w-0 items-center gap-2"><FiMapPin className="shrink-0" /> <span className="truncate">{(trip.stops || []).map((s) => s.city).slice(0, 2).join(', ') || 'No stops yet'}</span></span>
             </div>
           </div>
 
-          <div className="mt-5 flex flex-wrap gap-2">
+          <div className="responsive-action-row mt-5">
             {onBuilder && (
               <button onClick={() => onBuilder(trip)} className="inline-flex items-center gap-2 rounded-full bg-teal-500 px-4 py-2 text-sm font-semibold text-white shadow-soft transition hover:-translate-y-0.5">
                 Builder <FiChevronRight />

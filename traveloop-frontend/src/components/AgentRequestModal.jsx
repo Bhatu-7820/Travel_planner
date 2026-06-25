@@ -27,11 +27,11 @@ export default function AgentRequestModal({ isOpen, onClose, tripId }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/60 p-3 backdrop-blur-sm sm:p-4">
       <motion.div 
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="w-full max-w-md rounded-[2rem] bg-white p-8 shadow-2xl dark:bg-slate-900"
+        className="responsive-card my-auto max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto bg-white p-5 shadow-2xl dark:bg-slate-900 sm:p-8"
       >
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-black">Choose Agent Help</h2>

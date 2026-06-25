@@ -56,9 +56,9 @@ export default function CitySearchModal({ isOpen, onClose, trip, onAdded }) {
   if (!isOpen) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 px-4 backdrop-blur-sm">
-      <div className="w-full max-w-2xl rounded-3xl border border-white/20 bg-white p-5 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
-        <div className="mb-4 flex items-center justify-between">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/60 p-3 backdrop-blur-sm sm:p-4">
+      <div className="responsive-card my-auto max-h-[calc(100dvh-2rem)] w-full max-w-2xl overflow-y-auto border border-white/20 bg-white p-4 shadow-2xl dark:border-slate-800 dark:bg-slate-900 sm:p-5">
+        <div className="mb-4 flex items-center justify-between gap-3">
           <div>
             <h3 className="text-xl font-bold">Add a city</h3>
             <p className="text-sm text-slate-500">Search from the mock city database.</p>
@@ -78,11 +78,11 @@ export default function CitySearchModal({ isOpen, onClose, trip, onAdded }) {
           />
         </div>
 
-        <div className="mt-4 max-h-[60vh] space-y-3 overflow-auto pr-1">
+        <div className="mt-4 max-h-[min(60vh,28rem)] space-y-3 overflow-auto pr-1">
           {loading && <p className="text-sm text-slate-500">Searching cities...</p>}
           {!loading && cities.map((city) => (
-            <div key={city.id} className="flex items-center gap-4 rounded-2xl border border-slate-100 p-3 dark:border-slate-800">
-              <SafeImage src={city.image} alt={city.name} className="h-16 w-20 rounded-2xl object-cover" fallbackText={city.name[0]} />
+            <div key={city.id} className="flex flex-col gap-3 rounded-2xl border border-slate-100 p-3 dark:border-slate-800 min-[460px]:flex-row min-[460px]:items-center min-[460px]:gap-4">
+              <SafeImage src={city.image} alt={city.name} className="h-36 w-full rounded-2xl object-cover min-[460px]:h-16 min-[460px]:w-20" fallbackText={city.name[0]} />
               <div className="min-w-0 flex-1">
                 <h4 className="font-semibold">{city.name}</h4>
                 <p className="text-sm text-slate-500">{city.country}</p>

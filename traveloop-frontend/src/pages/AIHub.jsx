@@ -292,9 +292,9 @@ export default function AIHub() {
   };
 
   return (
-    <div className="space-y-8 min-h-screen">
+    <div className="safe-container min-h-screen space-y-6 sm:space-y-8">
       {/* Glow Banner Header */}
-      <section className="relative rounded-[2.5rem] bg-slate-900 p-8 text-white shadow-soft overflow-hidden border border-slate-800">
+      <section className="responsive-card relative overflow-hidden border border-slate-800 bg-slate-900 p-5 text-white shadow-soft sm:p-8">
         <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-teal-500/25 blur-3xl"></div>
         <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-indigo-500/20 blur-3xl"></div>
         
@@ -302,22 +302,22 @@ export default function AIHub() {
           <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-teal-500 to-indigo-600 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white shadow-soft">
             <FiActivity className="animate-pulse" /> Traveloop Travel Lab
           </span>
-          <h1 className="mt-4 text-4xl sm:text-5xl font-black bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
+          <h1 className="mt-4 bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-3xl font-black text-transparent sm:text-4xl lg:text-5xl">
             Travel Planner Lab
           </h1>
-          <p className="mt-3 text-slate-400 text-base max-w-2xl">
+          <p className="mt-3 max-w-2xl text-sm text-slate-400 sm:text-base">
             Leverage advanced planning agents to plan budgets, design schedules, find ideal hotels, package packing checklists, and optimize city pathways.
           </p>
         </div>
       </section>
 
       {/* Main Grid: Tabs Menu & Content Container */}
-      <div className="grid gap-8 lg:grid-cols-12">
+      <div className="grid gap-5 lg:grid-cols-12 lg:gap-8">
         {/* Left Hand Tab Navigation Menu */}
         <aside className="lg:col-span-3">
-          <div className="rounded-[2rem] border border-white/30 bg-white/75 p-4 shadow-soft dark:border-slate-800/85 dark:bg-slate-900/75 backdrop-blur-xl sticky top-24">
+          <div className="responsive-card sticky top-20 border border-white/30 bg-white/75 p-3 shadow-soft backdrop-blur-xl dark:border-slate-800/85 dark:bg-slate-900/75 lg:top-24 lg:p-4">
             <h2 className="px-4 py-2 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Planner Menu</h2>
-            <nav className="mt-3 space-y-1">
+            <nav className="touch-scroll-x -mx-1 mt-2 flex gap-2 px-1 pb-1 lg:mx-0 lg:mt-3 lg:block lg:space-y-1 lg:overflow-visible lg:px-0 lg:pb-0">
               {[
                 { id: 'analytics', label: 'Travel Insights', icon: FiTrendingUp },
                 { id: 'itinerary', label: 'Itinerary Planner', icon: FiMap },
@@ -333,7 +333,7 @@ export default function AIHub() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-semibold transition ${
+                    className={`flex min-w-max items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-semibold transition lg:w-full ${
                       isActive 
                         ? 'bg-gradient-to-r from-teal-500 to-blue-600 text-white shadow-soft' 
                         : 'text-slate-700 hover:bg-white/40 dark:text-slate-300 dark:hover:bg-slate-800/40'
@@ -350,7 +350,7 @@ export default function AIHub() {
 
         {/* Right Hand Content Panel */}
         <main className="lg:col-span-9">
-          <div className="rounded-[2rem] border border-white/30 bg-white/75 p-6 shadow-soft dark:border-slate-800/85 dark:bg-slate-900/75 backdrop-blur-xl min-h-[500px] flex flex-col justify-between">
+          <div className="responsive-card flex min-h-[500px] flex-col justify-between border border-white/30 bg-white/75 p-4 shadow-soft backdrop-blur-xl dark:border-slate-800/85 dark:bg-slate-900/75 sm:p-6">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}
@@ -415,7 +415,7 @@ export default function AIHub() {
                           {/* Popular Destinations Bar Chart */}
                           <div className="p-5 rounded-3xl border border-white/20 bg-white/40 dark:bg-slate-950/40 backdrop-blur-md">
                             <h4 className="font-bold text-sm mb-4">Trending Global Destinations</h4>
-                            <div className="h-64">
+                            <div className="h-56 sm:h-64">
                               <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={analytics.popularDestinations}>
                                   <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
@@ -430,7 +430,7 @@ export default function AIHub() {
                           {/* Budget trends Area Chart */}
                           <div className="p-5 rounded-3xl border border-white/20 bg-white/40 dark:bg-slate-950/40 backdrop-blur-md">
                             <h4 className="font-bold text-sm mb-4">Estimated Travel Spending Curve (INR)</h4>
-                            <div className="h-64">
+                            <div className="h-56 sm:h-64">
                               <ResponsiveContainer width="100%" height="100%">
                                 <AreaChart data={analytics.userTravelTrends}>
                                   <XAxis dataKey="month" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
@@ -564,17 +564,17 @@ export default function AIHub() {
                     {itineraryStatus === 'succeeded' && generatedItinerary && (
                       <div className="space-y-6">
                         {/* Cover Image */}
-                        <div className="h-48 w-full rounded-3xl overflow-hidden relative border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <div className="relative h-44 w-full overflow-hidden rounded-3xl border border-slate-200 shadow-sm dark:border-slate-800 sm:h-48">
                           <img src={getDestinationImage(generatedItinerary.destination)} alt={generatedItinerary.destination} className="h-full w-full object-cover" />
                           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent" />
-                          <div className="absolute bottom-4 left-6 text-white pr-6">
+                          <div className="absolute bottom-4 left-4 pr-4 text-white sm:left-6 sm:pr-6">
                             <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-teal-400 bg-teal-500/10 border border-teal-500/25 px-2.5 py-1 rounded-full">Itinerary</span>
-                            <h3 className="text-2xl font-black mt-2 leading-tight">{generatedItinerary.itinerary.tripName}</h3>
+                            <h3 className="mt-2 text-xl font-black leading-tight sm:text-2xl">{generatedItinerary.itinerary.tripName}</h3>
                             <p className="text-xs text-white/80 mt-1">Destination: {generatedItinerary.destination} | Budget limit: ₹{generatedItinerary.budget.toLocaleString()}</p>
                           </div>
                         </div>
 
-                        <div className="flex justify-end gap-2">
+                        <div className="responsive-action-row justify-end">
                           <button 
                             onClick={() => dispatch(clearItinerary())} 
                             className="rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-2.5 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800"
@@ -722,17 +722,17 @@ export default function AIHub() {
                     {budgetStatus === 'succeeded' && generatedBudget && (
                       <div className="space-y-6">
                         {/* Cover Image */}
-                        <div className="h-48 w-full rounded-3xl overflow-hidden relative border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <div className="relative h-44 w-full overflow-hidden rounded-3xl border border-slate-200 shadow-sm dark:border-slate-800 sm:h-48">
                           <img src={getDestinationImage(generatedBudget.destination)} alt={generatedBudget.destination} className="h-full w-full object-cover" />
                           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent" />
-                          <div className="absolute bottom-4 left-6 text-white pr-6">
+                          <div className="absolute bottom-4 left-4 pr-4 text-white sm:left-6 sm:pr-6">
                             <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-teal-400 bg-teal-500/10 border border-teal-500/25 px-2.5 py-1 rounded-full">Budget Estimate</span>
-                            <h3 className="text-2xl font-black mt-2 leading-tight">Cost Estimate: {generatedBudget.destination}</h3>
+                            <h3 className="mt-2 text-xl font-black leading-tight sm:text-2xl">Cost Estimate: {generatedBudget.destination}</h3>
                             <p className="text-xs text-white/80 mt-1">Tier: {generatedBudget.budgetType} | Duration: {generatedBudget.days} days</p>
                           </div>
                         </div>
 
-                        <div className="flex justify-end gap-2">
+                        <div className="responsive-action-row justify-end">
                           <button 
                             onClick={() => dispatch(clearBudget())} 
                             className="rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-2 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800"
@@ -786,7 +786,7 @@ export default function AIHub() {
                         <div className="grid gap-6 md:grid-cols-2">
                           <div className="p-5 rounded-3xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/20">
                             <h4 className="font-bold text-sm mb-4">Cost Category Distribution</h4>
-                            <div className="h-64">
+                            <div className="h-56 sm:h-64">
                               <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
                                   <Pie
@@ -818,7 +818,7 @@ export default function AIHub() {
 
                           <div className="p-5 rounded-3xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/20">
                             <h4 className="font-bold text-sm mb-4">Estimated Day-by-Day Expenses</h4>
-                            <div className="h-64">
+                            <div className="h-56 sm:h-64">
                               <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={generatedBudget.budgetEstimation.dailyBreakdown}>
                                   <XAxis dataKey="day" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} label={{ value: 'Days', position: 'insideBottom', offset: -5 }} />
@@ -944,7 +944,7 @@ export default function AIHub() {
                     )}
 
                     {destinationStatus === 'loading' && (
-                      <div className="grid gap-6 sm:grid-cols-3">
+                      <div className="grid gap-4 md:grid-cols-3 lg:gap-6">
                         <Skeleton className="h-64 rounded-3xl" />
                         <Skeleton className="h-64 rounded-3xl" />
                         <Skeleton className="h-64 rounded-3xl" />
@@ -953,7 +953,7 @@ export default function AIHub() {
 
                     {destinationStatus === 'succeeded' && recommendedDestinations && (
                       <div className="space-y-6">
-                        <div className="flex justify-between items-center border-b pb-4">
+                        <div className="flex flex-col gap-3 border-b pb-4 sm:flex-row sm:items-center sm:justify-between">
                           <h3 className="text-xl font-bold">Matches Recommendations</h3>
                           <button 
                             onClick={() => dispatch(clearRecommendations())} 
@@ -963,7 +963,7 @@ export default function AIHub() {
                           </button>
                         </div>
 
-                        <div className="grid gap-6 sm:grid-cols-3">
+                        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 lg:gap-6">
                           {recommendedDestinations.results.destinations.map((dest, idx) => (
                             <div key={idx} className="rounded-3xl border border-white/30 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl shadow-soft overflow-hidden flex flex-col justify-between hover-lift">
                               {/* Destination Image Cover */}
@@ -1072,7 +1072,7 @@ export default function AIHub() {
                     )}
 
                     {hotelStatus === 'loading' && (
-                      <div className="grid gap-6 sm:grid-cols-3">
+                      <div className="grid gap-4 md:grid-cols-3 lg:gap-6">
                         <Skeleton className="h-72 rounded-3xl" />
                         <Skeleton className="h-72 rounded-3xl" />
                         <Skeleton className="h-72 rounded-3xl" />
@@ -1081,7 +1081,7 @@ export default function AIHub() {
 
                     {hotelStatus === 'succeeded' && recommendedHotels && (
                       <div className="space-y-6">
-                        <div className="flex justify-between items-center border-b pb-4">
+                        <div className="flex flex-col gap-3 border-b pb-4 sm:flex-row sm:items-center sm:justify-between">
                           <h3 className="text-xl font-bold">Recommended Stays</h3>
                           <button 
                             onClick={() => dispatch(clearRecommendations())} 
@@ -1091,7 +1091,7 @@ export default function AIHub() {
                           </button>
                         </div>
 
-                        <div className="grid gap-6 sm:grid-cols-3">
+                        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 lg:gap-6">
                           {recommendedHotels.results.hotels.map((hotel, idx) => (
                             <div key={idx} className="rounded-3xl border border-white/30 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl shadow-soft overflow-hidden flex flex-col justify-between hover-lift">
                               {/* Hotel Image Cover */}
@@ -1341,7 +1341,7 @@ export default function AIHub() {
 
                         {optimizeStatus === 'succeeded' && optimizedRoute && (
                           <div className="space-y-6">
-                            <div className="flex justify-between items-center border-b pb-4">
+                            <div className="flex flex-col gap-3 border-b pb-4 sm:flex-row sm:items-center sm:justify-between">
                               <div>
                                 <h3 className="text-xl font-bold">Optimized Sequence Results</h3>
                                 <p className="text-sm text-rose-500 font-semibold">{optimizedRoute.savingsEstimation}</p>
@@ -1442,7 +1442,7 @@ export default function AIHub() {
                 </div>
               </div>
 
-              <div className="flex gap-2 justify-end mt-6">
+              <div className="responsive-action-row mt-6 justify-end">
                 <button
                   type="button"
                   onClick={() => setIsSaveTripModalOpen(false)}

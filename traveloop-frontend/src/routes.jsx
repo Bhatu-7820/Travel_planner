@@ -61,12 +61,12 @@ function SideTickerStrips() {
   return (
     <>
       {/* Left Margin Infinite Scrolling Ticker Strip */}
-      <div className="hidden xl:flex fixed left-3 top-0 bottom-0 w-8 z-30 pointer-events-none flex-col justify-start bg-slate-950/5 border-l border-r border-white/[0.03] dark:border-slate-800/10 backdrop-blur-[1px] overflow-hidden">
+      <div className="hidden 2xl:flex fixed left-3 top-0 bottom-0 w-8 z-30 pointer-events-none flex-col justify-start bg-slate-950/5 border-l border-r border-white/[0.03] dark:border-slate-800/10 backdrop-blur-[1px] overflow-hidden">
         <VerticalTickerUp />
       </div>
 
       {/* Right Margin Infinite Scrolling Ticker Strip */}
-      <div className="hidden xl:flex fixed right-3 top-0 bottom-0 w-8 z-30 pointer-events-none flex-col justify-start bg-slate-950/5 border-l border-r border-white/[0.03] dark:border-slate-800/10 backdrop-blur-[1px] overflow-hidden">
+      <div className="hidden 2xl:flex fixed right-3 top-0 bottom-0 w-8 z-30 pointer-events-none flex-col justify-start bg-slate-950/5 border-l border-r border-white/[0.03] dark:border-slate-800/10 backdrop-blur-[1px] overflow-hidden">
         <VerticalTickerDown />
       </div>
     </>
@@ -101,7 +101,7 @@ function MainLayout() {
         </div>
         <Navbar />
         <SideTickerStrips />
-        <main className="relative w-full flex-1 px-4 py-6 sm:px-6 lg:px-8">
+        <main className="relative w-full flex-1 px-3 py-4 sm:px-5 sm:py-6 lg:px-8">
           <Outlet />
         </main>
         <AIAssistant />

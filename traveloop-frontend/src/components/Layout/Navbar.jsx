@@ -97,14 +97,14 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/20 bg-white/80 backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/80">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
-        <Link to="/" className="flex items-center gap-3">
-          <div className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-teal-500 via-blue-500 to-orange-400 text-lg font-black text-white shadow-soft">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-3 sm:gap-3 sm:px-6 lg:px-8">
+        <Link to="/" className="flex min-w-0 items-center gap-2 sm:gap-3">
+          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-teal-500 via-blue-500 to-orange-400 text-base font-black text-white shadow-soft sm:h-10 sm:w-10 sm:text-lg">
             T
           </div>
-          <div>
-            <p className="text-lg font-extrabold tracking-tight">Traveloop</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">Plan smarter, travel lighter</p>
+          <div className="min-w-0">
+            <p className="truncate text-base font-extrabold tracking-tight sm:text-lg">Traveloop</p>
+            <p className="hidden truncate text-xs text-slate-500 dark:text-slate-400 sm:block">Plan smarter, travel lighter</p>
           </div>
         </Link>
 
@@ -123,7 +123,7 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
           <button
             onClick={() => dispatch(toggleTheme())}
             className="grid h-10 w-10 place-items-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:-translate-y-0.5 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
@@ -148,7 +148,7 @@ export default function Navbar() {
             </button>
 
             {notifOpen && (
-              <div className="absolute right-0 mt-2 w-80 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-800 dark:bg-slate-900 z-50">
+              <div className="fixed left-3 right-3 top-16 z-50 max-h-[calc(100dvh-5rem)] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-800 dark:bg-slate-900 sm:absolute sm:left-auto sm:right-0 sm:top-auto sm:mt-2 sm:w-80">
                 {/* Header */}
                 <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700">
                   <span className="font-bold text-sm">Notifications</span>
@@ -165,7 +165,7 @@ export default function Navbar() {
                 </div>
 
                 {/* List */}
-                <div className="max-h-72 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800">
+                <div className="max-h-[min(18rem,calc(100dvh-10rem))] overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800">
                   {notifStatus === 'loading' ? (
                     <div className="p-4 text-sm text-slate-500 text-center">Loading…</div>
                   ) : notifications.length === 0 ? (
@@ -228,7 +228,7 @@ export default function Navbar() {
           <div className="relative" ref={profileRef}>
             <button
               onClick={() => setOpen((v) => !v)}
-              className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-2 py-1.5 shadow-sm dark:border-slate-700 dark:bg-slate-900"
+            className="flex items-center gap-1 rounded-full border border-slate-200 bg-white px-1.5 py-1.5 shadow-sm dark:border-slate-700 dark:bg-slate-900 sm:gap-2 sm:px-2"
             >
               <div className="grid h-8 w-8 place-items-center overflow-hidden rounded-full bg-teal-500 text-sm font-bold text-white">
                 {user?.photoUrl ? (
@@ -278,8 +278,8 @@ export default function Navbar() {
       </div>
 
       {mobileOpen && (
-        <div className="border-t border-slate-200 bg-white px-4 py-3 lg:hidden dark:border-slate-800 dark:bg-slate-950">
-          <div className="flex flex-col gap-2">
+        <div className="max-h-[calc(100dvh-4rem)] overflow-y-auto border-t border-slate-200 bg-white px-3 py-3 lg:hidden dark:border-slate-800 dark:bg-slate-950 sm:px-4">
+          <div className="grid gap-2 sm:grid-cols-2">
             {navItems.map((item) => (
               <NavLink key={item.to} to={item.to} className={navLinkClass} onClick={() => setMobileOpen(false)}>
                 <span className="flex items-center gap-1">

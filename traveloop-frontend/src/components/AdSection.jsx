@@ -37,7 +37,7 @@ export default function AdSection() {
   }, []);
 
   return (
-    <div className="relative h-80 w-full overflow-hidden rounded-[2.5rem] border border-white/20 dark:border-white/10 shadow-soft transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(59,130,246,0.15)] group bg-white/10 dark:bg-slate-950/20 backdrop-blur-xl">
+    <div className="responsive-card group relative h-[26rem] w-full overflow-hidden border border-white/20 bg-white/10 shadow-soft backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(59,130,246,0.15)] dark:border-white/10 dark:bg-slate-950/20 sm:h-80">
       <AnimatePresence mode="wait">
         <motion.div
           key={idx}
@@ -61,28 +61,28 @@ export default function AdSection() {
           {/* Visual gradient overlay for clean high-contrast reading */}
           <div className="absolute inset-0 bg-gradient-to-r from-white/70 via-white/30 to-transparent dark:from-slate-950/75 dark:via-slate-950/35 dark:to-transparent"></div>
           
-          <div className="absolute inset-0 flex items-center p-8 sm:p-12">
+          <div className="absolute inset-0 flex items-end p-4 sm:items-center sm:p-8 lg:p-12">
             {/* Sliding text container */}
             <motion.div
               initial={{ x: -45, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.15, duration: 0.5, ease: "easeOut" }}
-              className="relative z-10 max-w-lg rounded-[2rem] bg-white/60 dark:bg-slate-950/50 border border-white/30 dark:border-white/10 backdrop-blur-xl p-6 sm:p-8 shadow-2xl hover:border-cyan-500/20 transition-all duration-300"
+              className="relative z-10 max-w-lg rounded-[1.5rem] border border-white/30 bg-white/70 p-5 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:border-cyan-500/20 dark:border-white/10 dark:bg-slate-950/55 sm:rounded-[2rem] sm:p-8"
             >
               <span className="inline-flex items-center gap-1 rounded-full bg-teal-500/10 dark:bg-teal-500/20 border border-teal-500/20 dark:border-teal-500/30 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-teal-600 dark:text-teal-300 mb-4 font-mono">
                 <FiGlobe className="animate-pulse" />
                 {ads[idx].tag}
               </span>
-              <h3 className="text-3xl sm:text-4xl font-black tracking-tight leading-tight text-slate-900 dark:text-white">{ads[idx].title}</h3>
+              <h3 className="text-2xl font-black leading-tight tracking-tight text-slate-900 dark:text-white sm:text-4xl">{ads[idx].title}</h3>
               <p className="mt-3 text-sm sm:text-base font-medium text-slate-600 dark:text-slate-300">{ads[idx].subtitle}</p>
-              <button className="mt-6 flex items-center gap-2 rounded-full bg-slate-900 dark:bg-white px-6 py-3 text-xs font-bold text-white dark:text-slate-900 shadow-xl transition-all hover:bg-cyan-600 dark:hover:bg-cyan-400 hover:scale-105 active:scale-[0.98]">
+              <button className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-xs font-bold text-white shadow-xl transition-all hover:scale-105 hover:bg-cyan-600 active:scale-[0.98] dark:bg-white dark:text-slate-900 dark:hover:bg-cyan-400 sm:mt-6 sm:w-auto">
                 Explore Now <FiArrowRight />
               </button>
             </motion.div>
           </div>
         </motion.div>
       </AnimatePresence>
-      <div className="absolute bottom-6 right-8 flex gap-2 z-20">
+      <div className="absolute bottom-4 right-5 z-20 flex gap-2 sm:bottom-6 sm:right-8">
         {ads.map((_, i) => (
           <button
             key={i}

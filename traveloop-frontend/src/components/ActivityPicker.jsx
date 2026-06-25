@@ -93,14 +93,14 @@ export default function ActivityPicker({ isOpen, onClose, tripId, stopId, city, 
   };
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 px-4 backdrop-blur-sm">
-      <div className="w-full max-w-3xl rounded-3xl border border-white/20 bg-white p-5 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
-        <div className="mb-4 flex items-center justify-between">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/60 p-3 backdrop-blur-sm sm:p-4">
+      <div className="responsive-card my-auto max-h-[calc(100dvh-2rem)] w-full max-w-3xl overflow-y-auto border border-white/20 bg-white p-4 shadow-2xl dark:border-slate-800 dark:bg-slate-900 sm:p-5">
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h3 className="text-xl font-bold">Add activities</h3>
             <p className="text-sm text-slate-500">Filter and add activities to this stop.</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex shrink-0 gap-2">
             <button onClick={generateAIActivities} disabled={generatingAI} className="rounded-full bg-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-purple-500/30 transition hover:bg-purple-700">
               {generatingAI ? 'Thinking...' : '✨ Generate Ideas'}
             </button>
@@ -123,7 +123,7 @@ export default function ActivityPicker({ isOpen, onClose, tripId, stopId, city, 
           </label>
         </div>
 
-        <div className="mt-4 max-h-[45vh] space-y-3 overflow-auto pr-1">
+        <div className="mt-4 max-h-[min(45vh,22rem)] space-y-3 overflow-auto pr-1">
           {loading && <p className="text-sm text-slate-500">Loading activities...</p>}
           {activities.map((activity) => (
             <div key={activity.id} className="rounded-2xl border border-slate-100 p-4 dark:border-slate-800">

@@ -46,8 +46,8 @@ export default function CreateTrip() {
 
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-3xl">
-      <div className="rounded-[2rem] border border-white/50 dark:border-white/10 bg-white/40 dark:bg-slate-950/40 p-6 shadow-soft backdrop-blur-xl">
-        <h1 className="text-3xl font-black">Create a new trip</h1>
+      <div className="responsive-card border border-white/50 bg-white/40 p-4 shadow-soft backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/40 sm:p-6">
+        <h1 className="text-2xl font-black sm:text-3xl">Create a new trip</h1>
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">Set the foundation before building the itinerary.</p>
 
         <form onSubmit={submit} className="mt-8 grid gap-5">
@@ -80,7 +80,7 @@ export default function CreateTrip() {
             <input value={form.coverPhoto} onChange={(e) => setForm((p) => ({ ...p, coverPhoto: e.target.value }))} placeholder="https://..." className="w-full rounded-2xl border border-slate-300/60 dark:border-white/10 bg-slate-900/5 dark:bg-white/5 px-4 py-3 focus:border-teal-500 focus:outline-none transition-all backdrop-blur-sm" />
           </div>
 
-          <button disabled={saving} className="rounded-2xl bg-teal-500 px-5 py-3 font-semibold text-white shadow-soft hover:bg-teal-600 transition-colors">
+          <button disabled={saving} className="rounded-2xl bg-teal-500 px-5 py-3 font-semibold text-white shadow-soft transition-colors hover:bg-teal-600">
             {saving ? 'Creating...' : 'Create trip'}
           </button>
         </form>

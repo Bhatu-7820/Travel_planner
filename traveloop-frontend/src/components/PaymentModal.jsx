@@ -19,18 +19,18 @@ export default function PaymentModal({ isOpen, onClose, amount, onPaid }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/60 p-3 backdrop-blur-sm sm:p-4">
       <motion.div 
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="w-full max-w-md overflow-hidden rounded-[2.5rem] bg-white shadow-2xl dark:bg-slate-900"
+        className="responsive-card my-auto max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto bg-white shadow-2xl dark:bg-slate-900"
       >
-        <div className="bg-gradient-to-r from-teal-500 to-blue-500 p-8 text-center text-white">
+        <div className="bg-gradient-to-r from-teal-500 to-blue-500 p-6 text-center text-white sm:p-8">
           <p className="text-sm font-medium uppercase tracking-widest opacity-80">Secure Checkout</p>
           <h2 className="mt-2 text-4xl font-black">₹{amount}</h2>
         </div>
 
-        <div className="p-8">
+        <div className="p-5 sm:p-8">
           {step === 'options' && (
             <div className="space-y-4">
               <p className="mb-4 text-center text-sm text-slate-500">Choose your payment method</p>
@@ -58,7 +58,7 @@ export default function PaymentModal({ isOpen, onClose, amount, onPaid }) {
 
           {step === 'scanner' && (
             <div className="text-center">
-              <div className="relative mx-auto mb-6 h-48 w-48 overflow-hidden rounded-3xl border-4 border-teal-500/30 p-2">
+              <div className="relative mx-auto mb-6 h-40 w-40 overflow-hidden rounded-3xl border-4 border-teal-500/30 p-2 sm:h-48 sm:w-48">
                 <div className="absolute inset-0 z-10 animate-scan border-t-2 border-teal-500 shadow-[0_-10px_20px_-5px_rgba(20,184,166,0.5)]"></div>
                 <img 
                   src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=traveloop@upi&pn=Traveloop&am=${amount}&cu=INR`} 
