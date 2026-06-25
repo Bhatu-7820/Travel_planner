@@ -48,6 +48,14 @@ button, input, select, textarea {
   .responsive-action-row > * {
     @apply w-full justify-center sm:w-auto;
   }
+
+  .mobile-card {
+    @apply rounded-2xl sm:rounded-[2rem];
+  }
+
+  .mobile-card-body {
+    @apply p-3.5 sm:p-5;
+  }
 }
 
 @layer utilities {
@@ -224,7 +232,7 @@ button, input, select, textarea {
 .flip-card-inner {
   position: relative;
   width: 100%;
-  height: clamp(190px, 56vw, 224px);
+  height: clamp(148px, 42vw, 224px);
   transition: transform 0.75s cubic-bezier(0.2, 0.85, 0.2, 1);
   transform-style: preserve-3d;
 }
@@ -414,9 +422,12 @@ button, input, select, textarea {
   }
 
   .hover-lift:hover,
-  .depth-hover:hover,
-  .flip-card:hover .flip-card-inner {
+  .depth-hover:hover {
     transform: none;
+  }
+
+  .flip-card:active .flip-card-inner {
+    transform: scale(0.98);
   }
 }
 

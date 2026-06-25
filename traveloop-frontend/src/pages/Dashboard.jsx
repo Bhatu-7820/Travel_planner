@@ -52,6 +52,10 @@ function DestCard({ dest, index, onClick }) {
     <motion.div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      initial={{ opacity: 0, y: 18, scale: 0.98 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ duration: 0.38, delay: Math.min(index * 0.015, 0.18), ease: [0.22, 1, 0.36, 1] }}
       whileHover={{ y: -6, scale: 1.03 }}
       whileTap={{ scale: 0.97 }}
       onClick={onClick}
@@ -59,7 +63,7 @@ function DestCard({ dest, index, onClick }) {
     >
       <div className="flip-card-inner">
         {/* Front */}
-        <div className="flip-card-front overflow-hidden shadow-soft border border-white/30 dark:border-slate-800 bg-slate-900">
+        <div className="flip-card-front overflow-hidden border border-white/30 bg-slate-900 shadow-soft dark:border-slate-800">
           <img
             src={dest.image}
             alt={dest.name}
@@ -79,14 +83,18 @@ function DestCard({ dest, index, onClick }) {
             />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent pointer-events-none" />
-          <div className="absolute bottom-0 left-0 right-0 p-3 pointer-events-none">
-            <span className="text-lg mr-1">{dest.tag}</span>
-            <h4 className="text-sm font-bold text-white leading-tight">{dest.name}</h4>
+          <div className="pointer-events-none absolute bottom-0 left-0 right-0 p-2.5 sm:p-3">
+            <span className="mr-1 text-base sm:text-lg">{dest.tag}</span>
+            <h4 className="text-fluid-wrap text-xs font-bold leading-tight text-white sm:text-sm">{dest.name}</h4>
             <p className="text-[10px] text-white/70">{dest.country}</p>
+            <div className="mt-1 flex items-center justify-between gap-1 rounded-full bg-white/10 px-2 py-1 text-[9px] font-bold text-white/85 backdrop-blur-sm sm:hidden">
+              <span>{dest.cost}</span>
+              <span>{dest.safety}</span>
+            </div>
           </div>
         </div>
         {/* Back */}
-        <div className="flip-card-back overflow-hidden bg-slate-950 shadow-soft border border-slate-700 p-4 flex flex-col justify-between text-white relative">
+        <div className="flip-card-back relative flex flex-col justify-between overflow-hidden border border-slate-700 bg-slate-950 p-3 text-white shadow-soft sm:p-4">
           {/* Looping video as background of the back card */}
           {isHovered && (
             <video
@@ -101,9 +109,9 @@ function DestCard({ dest, index, onClick }) {
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-slate-950/85 pointer-events-none" />
           
           <div className="relative z-10">
-            <span className="text-lg">{dest.tag}</span>
-            <h4 className="font-bold text-sm mt-1">{dest.name}</h4>
-            <p className="text-[10px] text-slate-200 mt-0.5 font-medium leading-relaxed">{dest.desc}</p>
+            <span className="text-base sm:text-lg">{dest.tag}</span>
+            <h4 className="mt-1 text-xs font-bold sm:text-sm">{dest.name}</h4>
+            <p className="mt-0.5 line-clamp-2 text-[10px] font-medium leading-relaxed text-slate-200 sm:line-clamp-none">{dest.desc}</p>
           </div>
           
           <div className="relative z-10 space-y-1 text-[10px]">
@@ -423,7 +431,7 @@ export default function Dashboard() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="grid gap-3 min-[420px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 sm:gap-4"
+            className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 sm:gap-4"
           >
             {visibleDests.map((dest, i) => (
               <Reveal key={dest.id} delay={Math.min(i * 0.025, 0.35)} direction="scale">
