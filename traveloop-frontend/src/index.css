@@ -237,10 +237,6 @@ button, input, select, textarea {
   transform-style: preserve-3d;
 }
 
-.flip-card:hover .flip-card-inner {
-  transform: rotateY(180deg);
-}
-
 .flip-card-front, .flip-card-back {
   position: absolute;
   width: 100%;
@@ -416,6 +412,12 @@ button, input, select, textarea {
   animation: marquee-vertical-down 24s linear infinite;
 }
 
+@media (hover: hover) and (pointer: fine) {
+  .flip-card:hover .flip-card-inner {
+    transform: rotateY(180deg);
+  }
+}
+
 @media (max-width: 1023px) {
   .bg-fixed {
     background-attachment: scroll;
@@ -451,5 +453,43 @@ button, input, select, textarea {
   select,
   textarea {
     font-size: 16px;
+  }
+
+  .flip-card:hover .flip-card-inner {
+    transform: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .animate-float-slow,
+  .animate-float-reverse,
+  .animate-spin-slow,
+  .animate-pulse-slow,
+  .animate-gradient-shift,
+  .animate-rotate-slow-reverse,
+  .animate-marquee-vertical-up,
+  .animate-marquee-vertical-down {
+    animation: none !important;
+  }
+
+  .depth-hover,
+  .hover-lift,
+  .flip-card-inner {
+    transition-duration: 180ms;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
   }
 }

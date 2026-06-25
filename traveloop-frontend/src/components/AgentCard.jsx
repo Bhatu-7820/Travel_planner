@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion';
+import { memo } from 'react';
 import { FiStar, FiCheckCircle, FiMessageCircle } from 'react-icons/fi';
 
-export default function AgentCard({ agent, onHire }) {
+function AgentCard({ agent, onHire }) {
   return (
     <motion.div 
       initial={{ opacity: 0, y: 14, scale: 0.98 }}
@@ -13,7 +14,7 @@ export default function AgentCard({ agent, onHire }) {
       className="mobile-card overflow-hidden border border-white/20 bg-white p-4 shadow-soft dark:border-slate-800 dark:bg-slate-900 sm:p-6"
     >
       <div className="flex items-center gap-3 sm:gap-4">
-        <img src={agent.image || `https://ui-avatars.com/api/?name=${agent.name}&background=random`} className="h-12 w-12 rounded-2xl object-cover sm:h-16 sm:w-16" alt={agent.name} />
+        <img src={agent.image || `https://ui-avatars.com/api/?name=${agent.name}&background=random`} loading="lazy" decoding="async" className="h-12 w-12 rounded-2xl object-cover sm:h-16 sm:w-16" alt={agent.name} />
         <div className="min-w-0">
           <div className="flex items-center gap-2">
             <h3 className="truncate font-bold">{agent.name}</h3>
@@ -41,3 +42,5 @@ export default function AgentCard({ agent, onHire }) {
     </motion.div>
   );
 }
+
+export default memo(AgentCard);

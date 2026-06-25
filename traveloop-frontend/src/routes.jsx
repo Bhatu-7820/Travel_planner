@@ -75,13 +75,38 @@ function SideTickerStrips() {
 
 function MainLayout() {
   const [scrollY, setScrollY] = useState(0);
+  const [parallaxEnabled, setParallaxEnabled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
+    const canUseParallax = () => (
+      window.innerWidth >= 1280 &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    );
+
+    let frame = 0;
+    const updateParallaxMode = () => {
+      const enabled = canUseParallax();
+      setParallaxEnabled(enabled);
+      if (!enabled) setScrollY(0);
     };
+
+    const handleScroll = () => {
+      if (!canUseParallax()) return;
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        setScrollY(window.scrollY);
+        frame = 0;
+      });
+    };
+
+    updateParallaxMode();
+    window.addEventListener('resize', updateParallaxMode, { passive: true });
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      window.removeEventListener('resize', updateParallaxMode);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   return (
@@ -92,7 +117,7 @@ function MainLayout() {
           <div 
             className="absolute inset-0 opacity-[0.48] dark:opacity-[0.58] bg-[url('/paradise_sunset.jpg')] bg-cover bg-center bg-no-repeat bg-fixed transition-transform duration-100 ease-out" 
             style={{
-              transform: `translateY(${scrollY * 0.12}px) scale(${1 + scrollY * 0.00012})`,
+              transform: parallaxEnabled ? `translateY(${scrollY * 0.12}px) scale(${1 + scrollY * 0.00012})` : 'none',
               WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.85) 30%, rgba(0,0,0,0.2) 80%, rgba(0,0,0,0) 100%)',
               maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.85) 30%, rgba(0,0,0,0.2) 80%, rgba(0,0,0,0) 100%)',
             }}

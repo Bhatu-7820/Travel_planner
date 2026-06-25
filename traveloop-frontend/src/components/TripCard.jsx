@@ -1,8 +1,9 @@
 import { FiCalendar, FiMapPin, FiEdit2, FiTrash2, FiEye, FiChevronRight } from 'react-icons/fi';
+import { memo } from 'react';
 import { motion } from 'framer-motion';
 import { formatDateRange } from '@/utils/helpers';
 
-export default function TripCard({ trip, onEdit, onDelete, onView, onBuilder, compact = false }) {
+function TripCard({ trip, onEdit, onDelete, onView, onBuilder, compact = false }) {
   return (
     <motion.article
       initial={{ opacity: 0, y: 16, scale: 0.98 }}
@@ -17,6 +18,8 @@ export default function TripCard({ trip, onEdit, onDelete, onView, onBuilder, co
           <img
             src={trip.coverPhoto}
             alt={trip.name}
+            loading="lazy"
+            decoding="async"
             className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-950/10 to-transparent" />
@@ -66,3 +69,5 @@ export default function TripCard({ trip, onEdit, onDelete, onView, onBuilder, co
     </motion.article>
   );
 }
+
+export default memo(TripCard);

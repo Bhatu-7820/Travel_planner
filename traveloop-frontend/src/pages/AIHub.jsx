@@ -565,7 +565,7 @@ export default function AIHub() {
                       <div className="space-y-6">
                         {/* Cover Image */}
                         <div className="relative h-44 w-full overflow-hidden rounded-3xl border border-slate-200 shadow-sm dark:border-slate-800 sm:h-48">
-                          <img src={getDestinationImage(generatedItinerary.destination)} alt={generatedItinerary.destination} className="h-full w-full object-cover" />
+                          <img src={getDestinationImage(generatedItinerary.destination)} alt={generatedItinerary.destination} loading="lazy" decoding="async" className="h-full w-full object-cover" />
                           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent" />
                           <div className="absolute bottom-4 left-4 pr-4 text-white sm:left-6 sm:pr-6">
                             <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-teal-400 bg-teal-500/10 border border-teal-500/25 px-2.5 py-1 rounded-full">Itinerary</span>
@@ -723,7 +723,7 @@ export default function AIHub() {
                       <div className="space-y-6">
                         {/* Cover Image */}
                         <div className="relative h-44 w-full overflow-hidden rounded-3xl border border-slate-200 shadow-sm dark:border-slate-800 sm:h-48">
-                          <img src={getDestinationImage(generatedBudget.destination)} alt={generatedBudget.destination} className="h-full w-full object-cover" />
+                          <img src={getDestinationImage(generatedBudget.destination)} alt={generatedBudget.destination} loading="lazy" decoding="async" className="h-full w-full object-cover" />
                           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent" />
                           <div className="absolute bottom-4 left-4 pr-4 text-white sm:left-6 sm:pr-6">
                             <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-teal-400 bg-teal-500/10 border border-teal-500/25 px-2.5 py-1 rounded-full">Budget Estimate</span>
@@ -968,7 +968,7 @@ export default function AIHub() {
                             <div key={idx} className="rounded-3xl border border-white/30 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl shadow-soft overflow-hidden flex flex-col justify-between hover-lift">
                               {/* Destination Image Cover */}
                               <div className="h-40 w-full overflow-hidden relative bg-slate-900">
-                                <img src={getDestinationImage(dest.name)} alt={dest.name} className="h-full w-full object-cover" />
+                                <img src={getDestinationImage(dest.name)} alt={dest.name} loading="lazy" decoding="async" className="h-full w-full object-cover" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 to-transparent" />
                                 <span className="absolute top-3 right-3 bg-white/20 backdrop-blur-sm text-white text-[10px] px-2.5 py-1 rounded-full font-bold flex items-center gap-0.5 border border-white/10">
                                   <FiPercent /> {dest.matchPercentage} match
@@ -1096,7 +1096,7 @@ export default function AIHub() {
                             <div key={idx} className="rounded-3xl border border-white/30 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl shadow-soft overflow-hidden flex flex-col justify-between hover-lift">
                               {/* Hotel Image Cover */}
                               <div className="h-40 w-full overflow-hidden relative bg-slate-900">
-                                <img src={getHotelImage(idx)} alt={hotel.name} className="h-full w-full object-cover" />
+                                <img src={getHotelImage(idx)} alt={hotel.name} loading="lazy" decoding="async" className="h-full w-full object-cover" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 to-transparent" />
                                 <span className="absolute top-3 right-3 bg-orange-500 text-white text-[10px] px-2.5 py-0.5 rounded-full font-bold flex items-center gap-0.5 shadow-md">
                                   ⭐ {hotel.rating}

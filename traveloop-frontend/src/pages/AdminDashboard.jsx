@@ -180,7 +180,7 @@ export default function AdminDashboard() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {allTrips.map(t => (
               <div key={t._id} className="overflow-hidden rounded-[2rem] border border-slate-100 bg-white shadow-soft dark:border-slate-800 dark:bg-slate-900">
-                <img src={t.coverImage || t.coverPhoto} className="h-32 w-full object-cover" alt={t.name} />
+                <img src={t.coverImage || t.coverPhoto} loading="lazy" decoding="async" className="h-32 w-full object-cover" alt={t.name} />
                 <div className="p-4">
                   <h4 className="font-bold">{t.name}</h4>
                   <p className="text-xs text-slate-500">By: {t.userId?.name || 'Unknown'}</p>
@@ -265,7 +265,7 @@ export default function AdminDashboard() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {destinations.map(d => (
               <div key={d._id} className="overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-soft dark:border-slate-800 dark:bg-slate-900">
-                <img src={d.image || 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=600'} className="h-32 w-full object-cover" alt={d.name} />
+                <img src={d.image || 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=600'} loading="lazy" decoding="async" className="h-32 w-full object-cover" alt={d.name} />
                 <div className="p-4">
                   <h4 className="font-bold">{d.name}</h4>
                   <p className="text-sm text-slate-500">{d.country}</p>

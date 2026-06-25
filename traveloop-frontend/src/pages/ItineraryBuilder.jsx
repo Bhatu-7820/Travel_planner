@@ -71,6 +71,8 @@ export default function ItineraryBuilder() {
               <img
                 src={trip.coverPhoto}
                 alt={trip.name}
+                loading="lazy"
+                decoding="async"
                 className="h-64 w-full object-cover lg:col-span-1 lg:h-full"
                 onError={(e) => { e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(trip.name)}&background=14b8a6&color=fff&size=400&format=png`; }}
               />

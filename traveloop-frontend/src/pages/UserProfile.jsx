@@ -113,6 +113,8 @@ export default function UserProfile() {
               <img
                 src={form.photoUrl || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(form.name || 'U')}`}
                 alt={form.name}
+                loading="lazy"
+                decoding="async"
                 className="mx-auto h-28 w-28 rounded-full object-cover"
               />
               <h3 className="mt-4 text-2xl font-bold">{form.name}</h3>

@@ -60,6 +60,8 @@ export default function PublicItinerary() {
           <img
             src={trip.coverPhoto}
             alt={trip.name}
+            loading="lazy"
+            decoding="async"
             className="h-72 w-full object-cover"
             onError={(e) => { e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(trip.name)}&background=14b8a6&color=fff&size=800&format=png`; }}
           />

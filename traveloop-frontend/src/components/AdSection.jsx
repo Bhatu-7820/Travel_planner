@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiGlobe, FiArrowRight } from 'react-icons/fi';
 
@@ -26,7 +27,7 @@ const ads = [
   }
 ];
 
-export default function AdSection() {
+function AdSection() {
   const [idx, setIdx] = useState(0);
 
   useEffect(() => {
@@ -52,6 +53,8 @@ export default function AdSection() {
             key={`img-${idx}`}
             src={ads[idx].image}
             alt={ads[idx].title}
+            loading="lazy"
+            decoding="async"
             initial={{ scale: 1.08, opacity: 0 }}
             animate={{ scale: 1, opacity: 0.75 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
@@ -95,3 +98,5 @@ export default function AdSection() {
     </div>
   );
 }
+
+export default memo(AdSection);
