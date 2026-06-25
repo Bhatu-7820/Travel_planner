@@ -89,17 +89,17 @@ export default function MyTrips() {
 
       {editing && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 px-4">
-          <div className="w-full max-w-2xl rounded-3xl bg-white p-6 shadow-2xl dark:bg-slate-900">
-            <h3 className="text-2xl font-black">Edit Trip</h3>
-            <p className="mt-1 text-sm text-slate-500">{formatDateRange(form.startDate, form.endDate)}</p>
+          <div className="w-full max-w-2xl rounded-3xl border border-white/50 dark:border-white/10 bg-white/80 dark:bg-slate-950/85 backdrop-blur-xl p-6 shadow-2xl">
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white">Edit Trip</h3>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{formatDateRange(form.startDate, form.endDate)}</p>
             <div className="mt-5 grid gap-4">
-              <input value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-950" />
+              <input value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} className="rounded-2xl border border-slate-300/60 dark:border-white/10 bg-slate-900/5 dark:bg-white/5 px-4 py-3 text-slate-900 dark:text-white focus:border-teal-500 focus:outline-none transition-all backdrop-blur-sm" />
               <div className="grid gap-4 sm:grid-cols-2">
-                <input type="date" value={form.startDate} onChange={(e) => setForm((p) => ({ ...p, startDate: e.target.value }))} className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-950" />
-                <input type="date" value={form.endDate} onChange={(e) => setForm((p) => ({ ...p, endDate: e.target.value }))} className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-950" />
+                <input type="date" value={form.startDate} onChange={(e) => setForm((p) => ({ ...p, startDate: e.target.value }))} className="rounded-2xl border border-slate-300/60 dark:border-white/10 bg-slate-900/5 dark:bg-white/5 px-4 py-3 text-slate-900 dark:text-white focus:border-teal-500 focus:outline-none transition-all backdrop-blur-sm" />
+                <input type="date" value={form.endDate} onChange={(e) => setForm((p) => ({ ...p, endDate: e.target.value }))} className="rounded-2xl border border-slate-300/60 dark:border-white/10 bg-slate-900/5 dark:bg-white/5 px-4 py-3 text-slate-900 dark:text-white focus:border-teal-500 focus:outline-none transition-all backdrop-blur-sm" />
               </div>
-              <textarea value={form.description} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} rows="4" className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-950" />
-              <input value={form.coverPhoto} onChange={(e) => setForm((p) => ({ ...p, coverPhoto: e.target.value }))} className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-950" />
+              <textarea value={form.description} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} rows="4" className="rounded-2xl border border-slate-300/60 dark:border-white/10 bg-slate-900/5 dark:bg-white/5 px-4 py-3 text-slate-900 dark:text-white focus:border-teal-500 focus:outline-none transition-all backdrop-blur-sm" />
+              <input value={form.coverPhoto} onChange={(e) => setForm((p) => ({ ...p, coverPhoto: e.target.value }))} className="rounded-2xl border border-slate-300/60 dark:border-white/10 bg-slate-900/5 dark:bg-white/5 px-4 py-3 text-slate-900 dark:text-white focus:border-teal-500 focus:outline-none transition-all backdrop-blur-sm" />
             </div>
             <div className="mt-6 flex flex-wrap justify-end gap-3">
               <button onClick={() => setEditing(null)} className="rounded-full border border-slate-200 px-5 py-2 font-semibold dark:border-slate-700">Cancel</button>

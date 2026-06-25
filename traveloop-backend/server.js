@@ -40,7 +40,7 @@ const allowedOrigins = [
 const io = new Server(server, {
   cors: {
     origin: (origin, cb) => {
-      if (!origin || allowedOrigins.includes(origin) || /\.netlify\.app$/.test(origin)) {
+      if (!origin || allowedOrigins.includes(origin) || /^http:\/\/localhost:\d+$/.test(origin) || /\.netlify\.app$/.test(origin)) {
         return cb(null, true);
       }
       cb(new Error(`Socket CORS: ${origin} not allowed`));
@@ -83,7 +83,7 @@ app.use(helmet({
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
+    if (allowedOrigins.includes(origin) || /^http:\/\/localhost:\d+$/.test(origin)) return callback(null, true);
     if (/\.netlify\.app$/.test(origin)) return callback(null, true);
     if (/\.onrender\.com$/.test(origin)) return callback(null, true);
     callback(new Error(`CORS: origin ${origin} not allowed`));

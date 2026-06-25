@@ -1,41 +1,144 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  FiArrowRight, FiMapPin, FiCompass, FiStar, FiSearch, FiGlobe,
+  FiCalendar, FiDollarSign, FiTrendingUp
+} from 'react-icons/fi';
 import { fetchTrips } from '@/store/slices/tripSlice';
-import { cityService } from '@/services/cityService';
-import { estimateTripBudget, getErrorMessage, sortTripsByStartDate, upcomingTrips } from '@/utils/helpers';
+import { estimateTripBudget, sortTripsByStartDate, upcomingTrips } from '@/utils/helpers';
 import TripCard from '@/components/TripCard';
 import AdSection from '@/components/AdSection';
-import SafeImage from '@/components/SafeImage';
-import toast from 'react-hot-toast';
+import { WORLD_DESTINATIONS, CONTINENTS } from '@/data/worldDestinations';
+import Globe3D from '@/components/Globe3D';
+
+/* ─── Scroll-triggered reveal wrapper ─── */
+function Reveal({ children, delay = 0, direction = 'up' }) {
+  const variants = {
+    up:    { hidden: { opacity: 0, y: 40 },  visible: { opacity: 1, y: 0 } },
+    left:  { hidden: { opacity: 0, x: -40 }, visible: { opacity: 1, x: 0 } },
+    right: { hidden: { opacity: 0, x: 40 },  visible: { opacity: 1, x: 0 } },
+    scale: { hidden: { opacity: 0, scale: 0.92 }, visible: { opacity: 1, scale: 1 } },
+  };
+  return (
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
+      variants={variants[direction] || variants.up}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+const VIDEO_LOOPS = [
+  'https://assets.mixkit.co/videos/preview/mixkit-beautiful-tropical-beach-and-sea-background-48866-large.mp4',
+  'https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-beautiful-island-48906-large.mp4',
+  'https://assets.mixkit.co/videos/preview/mixkit-traffic-in-a-futuristic-city-at-night-44368-large.mp4',
+  'https://assets.mixkit.co/videos/preview/mixkit-underwater-shot-of-a-coral-reef-with-fish-49807-large.mp4',
+  'https://assets.mixkit.co/videos/preview/mixkit-scenic-view-of-a-mountain-lake-48908-large.mp4',
+  'https://assets.mixkit.co/videos/preview/mixkit-walking-on-a-busy-city-street-44372-large.mp4'
+];
+
+/* ─── Destination flip card ─── */
+function DestCard({ dest, index, onClick }) {
+  const [isHovered, setIsHovered] = useState(false);
+  const videoUrl = VIDEO_LOOPS[index % VIDEO_LOOPS.length];
+
+  return (
+    <motion.div
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      whileHover={{ y: -6, scale: 1.03 }}
+      whileTap={{ scale: 0.97 }}
+      onClick={onClick}
+      className="cursor-pointer flip-card"
+    >
+      <div className="flip-card-inner">
+        {/* Front */}
+        <div className="flip-card-front overflow-hidden shadow-soft border border-white/30 dark:border-slate-800 bg-slate-900">
+          <img
+            src={dest.image}
+            alt={dest.name}
+            className="h-full w-full object-cover absolute inset-0 transition-opacity duration-300"
+            style={{ opacity: isHovered ? 0.15 : 1 }}
+            loading="lazy"
+            onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=600&fit=crop&q=80'; }}
+          />
+          {isHovered && (
+            <video
+              src={videoUrl}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="h-full w-full object-cover absolute inset-0 opacity-80"
+            />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent pointer-events-none" />
+          <div className="absolute bottom-0 left-0 right-0 p-3 pointer-events-none">
+            <span className="text-lg mr-1">{dest.tag}</span>
+            <h4 className="text-sm font-bold text-white leading-tight">{dest.name}</h4>
+            <p className="text-[10px] text-white/70">{dest.country}</p>
+          </div>
+        </div>
+        {/* Back */}
+        <div className="flip-card-back overflow-hidden bg-slate-950 shadow-soft border border-slate-700 p-4 flex flex-col justify-between text-white relative">
+          {/* Looping video as background of the back card */}
+          {isHovered && (
+            <video
+              src={videoUrl}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="h-full w-full object-cover absolute inset-0 opacity-25 pointer-events-none"
+            />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-slate-950/85 pointer-events-none" />
+          
+          <div className="relative z-10">
+            <span className="text-lg">{dest.tag}</span>
+            <h4 className="font-bold text-sm mt-1">{dest.name}</h4>
+            <p className="text-[10px] text-slate-200 mt-0.5 font-medium leading-relaxed">{dest.desc}</p>
+          </div>
+          
+          <div className="relative z-10 space-y-1 text-[10px]">
+            <div className="flex justify-between">
+              <span className="text-slate-400">Budget/day</span>
+              <span className="text-teal-400 font-bold">{dest.cost}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-slate-400">Best season</span>
+              <span className="text-slate-200 font-medium">{dest.season}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-slate-400">Safety</span>
+              <span className="text-green-400 font-bold">{dest.safety}</span>
+            </div>
+          </div>
+          <span className="relative z-10 mt-2 text-[10px] text-center text-teal-400 font-bold tracking-wider uppercase">Click to plan →</span>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
 
 export default function Dashboard() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const { trips, status } = useSelector((state) => state.trips);
-  const [cities, setCities] = useState([]);
-  const [loadingCities, setLoadingCities] = useState(false);
 
-  useEffect(() => {
-    dispatch(fetchTrips());
-  }, [dispatch]);
+  /* Destination filtering */
+  const [continent, setContinent] = useState('All');
+  const [search, setSearch] = useState('');
+  const [showAll, setShowAll] = useState(false);
 
-  useEffect(() => {
-    const loadCities = async () => {
-      try {
-        setLoadingCities(true);
-        const data = await cityService.getCities();
-        setCities(data.slice(0, 15));
-      } catch (error) {
-        toast.error(getErrorMessage(error));
-      } finally {
-        setLoadingCities(false);
-      }
-    };
-    loadCities();
-  }, []);
+  useEffect(() => { dispatch(fetchTrips()); }, [dispatch]);
 
   const upTrips = useMemo(() => upcomingTrips(trips).slice(0, 3), [trips]);
   const budgetTotal = useMemo(
@@ -43,116 +146,319 @@ export default function Dashboard() {
     [trips]
   );
 
+  const filteredDests = useMemo(() => {
+    let list = WORLD_DESTINATIONS;
+    if (continent !== 'All') list = list.filter(d => d.continent === continent);
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      list = list.filter(d => d.name.toLowerCase().includes(q) || d.country.toLowerCase().includes(q));
+    }
+    return list;
+  }, [continent, search]);
+
+  const visibleDests = showAll ? filteredDests : filteredDests.slice(0, 18);
+
   return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
-      <section className="rounded-[2rem] bg-gradient-to-br from-teal-500 via-blue-500 to-orange-400 p-8 text-white shadow-soft relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-4 opacity-20 text-9xl font-black select-none pointer-events-none">TRAVELOOP</div>
-        <div className="max-w-3xl relative z-10">
-          <p className="text-sm uppercase tracking-[0.3em] text-white/80">Premium Travel Experience</p>
-          <h1 className="mt-2 text-4xl font-black sm:text-6xl">Hello, {user?.name || 'Traveler'} 👋</h1>
-          <p className="mt-3 max-w-2xl text-white/90 text-lg">
-            Your intelligent assistant for multi-city journeys, secure payments, and AI-driven safety.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-4">
-            <button
-              onClick={() => navigate('/create-trip')}
-              className="rounded-full bg-white px-8 py-4 font-bold text-slate-900 shadow-xl transition hover:-translate-y-1 hover:shadow-2xl"
-            >
-              Start Planning
-            </button>
-            <button
-              onClick={() => document.getElementById('quick-planner').scrollIntoView({ behavior: 'smooth' })}
-              className="rounded-full bg-white/20 backdrop-blur px-8 py-4 font-bold text-white transition hover:bg-white/30"
-            >
-              Quick Planner
-            </button>
+    <div className="relative space-y-10 max-w-[1400px] mx-auto">
+      {/* Ambient background blurs */}
+      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute -top-40 -left-40 h-[500px] w-[500px] rounded-full bg-teal-500/[0.04] blur-3xl animate-float-slow" />
+        <div className="absolute top-1/3 -right-40 h-[400px] w-[400px] rounded-full bg-indigo-500/[0.04] blur-3xl animate-float-reverse" />
+        <div className="absolute bottom-20 left-1/4 h-[350px] w-[350px] rounded-full bg-orange-400/[0.03] blur-3xl animate-float-slow" />
+      </div>
+
+      {/* ══════════════════════════════════════════
+          HERO BANNER
+      ══════════════════════════════════════════ */}
+      <Reveal>
+        <section className="relative overflow-hidden rounded-3xl bg-white/40 dark:bg-slate-950/40 p-5 sm:p-6 text-slate-900 dark:text-white shadow-soft border border-white/50 dark:border-white/10 backdrop-blur-xl shadow-[0_0_50px_-12px_rgba(99,102,241,0.1)] dark:shadow-[0_0_50px_-12px_rgba(99,102,241,0.25)]">
+          <div className="absolute top-0 right-0 p-6 text-[8rem] font-black text-indigo-500/[0.04] dark:text-white/[0.02] select-none pointer-events-none leading-none">T</div>
+          
+          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div className="max-w-xl">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-500/10 dark:bg-white/10 border border-indigo-500/20 dark:border-white/20 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-indigo-700 dark:text-slate-200 mb-2.5">
+                <FiGlobe className="animate-spin-slow text-teal-500 dark:text-teal-400" /> Premium Travel Experience
+              </span>
+              <h1 className="text-2xl sm:text-3xl font-black leading-tight flex flex-wrap items-center gap-2 text-slate-900 dark:text-white">
+                Hello, {user?.name || 'Traveler'}
+                <motion.span
+                  animate={{ rotate: [0, 20, -10, 20, 0] }}
+                  transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 1 }}
+                  className="inline-block origin-bottom-right"
+                >
+                  👋
+                </motion.span>
+              </h1>
+              <p className="mt-2 max-w-lg text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed">
+                Your smart companion for multi-city journeys, secure payments, and reliable travel planning.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <motion.button
+                  onClick={() => navigate('/create-trip')}
+                  whileHover={{ scale: 1.05, y: -2, boxShadow: '0 10px 20px -5px rgba(20,184,166,0.35)' }}
+                  whileTap={{ scale: 0.97 }}
+                  className="flex items-center gap-2 rounded-full bg-teal-500 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-teal-500/25 hover:bg-teal-600 transition-colors"
+                >
+                  Start Planning <FiArrowRight />
+                </motion.button>
+                <motion.button
+                  onClick={() => document.getElementById('destinations')?.scrollIntoView({ behavior: 'smooth' })}
+                  whileHover={{ scale: 1.05, y: -1 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="rounded-full border border-slate-300/60 dark:border-white/10 bg-slate-900/5 dark:bg-white/5 backdrop-blur-sm px-5 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-900/10 dark:hover:bg-white/15 hover:text-slate-900 dark:hover:text-white transition-all"
+                >
+                  Explore Destinations
+                </motion.button>
+              </div>
+            </div>
+            
+            {/* Reduced 3D Globe inside the Welcome card */}
+            <div className="w-full lg:w-[170px] h-[170px] lg:h-[170px] flex items-center justify-center shrink-0">
+              <Globe3D />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </Reveal>
 
-      <AdSection />
+      {/* ══════════════════════════════════════════
+          AD CAROUSEL
+      ══════════════════════════════════════════ */}
+      <Reveal delay={0.08}>
+        <AdSection />
+      </Reveal>
 
+      {/* ══════════════════════════════════════════
+          STATS ROW
+      ══════════════════════════════════════════ */}
       <section className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-3xl p-5 glass-panel relative overflow-hidden group">
-          <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          <p className="text-sm font-semibold tracking-wide text-slate-500 relative z-10">UPCOMING TRIPS</p>
-          <p className="mt-2 text-4xl font-black bg-gradient-to-r from-teal-500 to-blue-500 bg-clip-text text-transparent relative z-10">{upTrips.length}</p>
-        </div>
-        <div className="rounded-3xl p-5 glass-panel relative overflow-hidden group">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          <p className="text-sm font-semibold tracking-wide text-slate-500 relative z-10">BUDGET HIGHLIGHT</p>
-          <p className="mt-2 text-4xl font-black bg-gradient-to-r from-blue-500 to-indigo-500 bg-clip-text text-transparent relative z-10">₹{budgetTotal.toFixed(0)}</p>
-        </div>
-        <div className="rounded-3xl p-5 glass-panel relative overflow-hidden group">
-          <div className="absolute inset-0 bg-gradient-to-br from-orange-400/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          <p className="text-sm font-semibold tracking-wide text-slate-500 relative z-10">TOTAL TRIPS</p>
-          <p className="mt-2 text-4xl font-black bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent relative z-10">{trips.length}</p>
-        </div>
+        {[
+          { label: 'UPCOMING TRIPS', value: upTrips.length, icon: FiCalendar, gradient: 'from-teal-500 to-cyan-500', glow: 'shadow-teal-500/10' },
+          { label: 'BUDGET HIGHLIGHT', value: `₹${budgetTotal.toFixed(0)}`, icon: FiDollarSign, gradient: 'from-blue-500 to-indigo-500', glow: 'shadow-blue-500/10' },
+          { label: 'TOTAL TRIPS', value: trips.length, icon: FiTrendingUp, gradient: 'from-orange-400 to-rose-400', glow: 'shadow-orange-400/10' },
+        ].map((stat, i) => (
+          <Reveal key={stat.label} delay={i * 0.08} direction="scale">
+            <div className={`group relative overflow-hidden rounded-[2rem] border border-white/50 dark:border-white/10 bg-white/40 dark:bg-slate-950/40 backdrop-blur-xl p-6 shadow-soft ${stat.glow} hover:-translate-y-1 hover:shadow-xl transition-all duration-300`}>
+              <div className={`absolute -top-8 -right-8 h-24 w-24 rounded-full bg-gradient-to-br ${stat.gradient} opacity-10 group-hover:opacity-20 transition-opacity blur-xl`} />
+              <div className="relative z-10">
+                <div className="flex items-center gap-2 mb-2">
+                  <stat.icon className="text-slate-400" size={14} />
+                  <p className="text-[10px] font-bold tracking-[0.15em] text-slate-500 uppercase">{stat.label}</p>
+                </div>
+                <p className={`text-3xl font-black bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent`}>{stat.value}</p>
+              </div>
+            </div>
+          </Reveal>
+        ))}
       </section>
 
-      <section id="quick-planner" className="rounded-[2.5rem] bg-white p-8 shadow-soft dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <div className="max-w-md">
-            <h2 className="text-3xl font-black">AI Trip Planner</h2>
-            <p className="mt-2 text-slate-500">Just enter a destination and let our AI agents draft a perfect multi-city plan for you.</p>
+      {/* ══════════════════════════════════════════
+          AI QUICK PLANNER
+      ══════════════════════════════════════════ */}
+      <Reveal direction="up">
+        <section className="rounded-3xl bg-white/40 dark:bg-slate-950/40 border border-white/50 dark:border-white/10 shadow-[0_0_50px_-12px_rgba(99,102,241,0.1)] dark:shadow-[0_0_50px_-12px_rgba(99,102,241,0.2)] p-6 sm:p-8 text-slate-900 dark:text-white backdrop-blur-xl">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <div className="max-w-md">
+              <div className="flex items-center gap-2 mb-1">
+                <FiCompass className="text-teal-500 dark:text-teal-400" />
+                <span className="text-xs font-bold uppercase tracking-[0.2em] text-teal-500 dark:text-teal-400">Trip Planner</span>
+              </div>
+              <h2 className="text-2xl font-black">Itinerary Planner</h2>
+              <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Just enter a destination and let our automated planners draft a perfect multi-city plan for you.</p>
+            </div>
+            <div className="flex flex-1 gap-2 max-w-xl">
+              <input
+                type="text"
+                placeholder="Where do you want to go?"
+                className="flex-1 rounded-2xl border border-slate-300/60 dark:border-white/10 bg-slate-900/5 dark:bg-white/5 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 px-6 py-4 text-sm outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition-all backdrop-blur-sm"
+              />
+              <motion.button
+                onClick={() => navigate('/create-trip')}
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+                className="rounded-2xl bg-teal-500 px-8 py-4 font-bold text-white shadow-md shadow-teal-500/25 hover:bg-teal-600 transition-colors"
+              >
+                Draft Itinerary
+              </motion.button>
+            </div>
           </div>
-          <div className="flex flex-1 gap-2 max-w-xl">
-            <input type="text" placeholder="Where do you want to go?" className="flex-1 rounded-2xl border border-slate-200 bg-slate-50 px-6 py-4 outline-none focus:border-teal-500 dark:border-slate-700 dark:bg-slate-950" />
-            <button onClick={() => navigate('/create-trip')} className="rounded-2xl bg-slate-900 px-8 py-4 font-bold text-white dark:bg-teal-500">Draft Itinerary</button>
-          </div>
-        </div>
-      </section>
+        </section>
+      </Reveal>
 
+      {/* ══════════════════════════════════════════
+          UPCOMING TRIPS
+      ══════════════════════════════════════════ */}
       <section>
-        <div className="mb-4 flex items-end justify-between">
-          <div>
-            <h2 className="text-3xl font-black">Next trips</h2>
-            <p className="text-sm text-slate-500">Sorted by start date.</p>
+        <Reveal>
+          <div className="mb-5 flex items-end justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <FiCalendar className="text-teal-500" />
+                <span className="text-xs font-bold uppercase tracking-[0.2em] text-teal-500">Your Journeys</span>
+              </div>
+              <h2 className="text-2xl font-black">Next Trips</h2>
+              <p className="text-sm text-slate-500">Sorted by start date.</p>
+            </div>
+            <motion.button
+              onClick={() => navigate('/my-trips')}
+              whileHover={{ x: 5 }}
+              className="text-sm font-semibold text-teal-500 hover:text-teal-400 flex items-center gap-1"
+            >
+              View all <FiArrowRight />
+            </motion.button>
           </div>
-        </div>
-        <div className="grid gap-5">
-          {status === 'loading' && <div className="rounded-3xl border border-dashed p-8 text-center text-slate-500 glass-panel">Loading trips...</div>}
-          {sortTripsByStartDate(upTrips).map((trip) => (
-            <TripCard
-              key={trip.id}
-              trip={trip}
-              compact
-              onBuilder={() => navigate(`/trip/${trip.id}/builder`)}
-              onView={() => navigate(`/trip/${trip.id}/view`)}
-            />
-          ))}
-          {!upTrips.length && status !== 'loading' && (
-            <div className="rounded-3xl border border-dashed border-slate-300 p-8 text-center text-slate-500 dark:border-slate-700 glass-panel">
-              No upcoming trips yet. Create your first itinerary.
+        </Reveal>
+        <div className="grid gap-4">
+          {status === 'loading' && (
+            <div className="rounded-3xl border border-dashed border-slate-300 p-8 text-center text-slate-400 animate-pulse">
+              Loading trips…
             </div>
           )}
-        </div>
-      </section>
-
-      <section>
-        <h2 className="text-3xl font-black">Popular destinations</h2>
-        <p className="text-sm text-slate-500">Explore top cities around the world.</p>
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-          {(loadingCities ? Array.from({ length: 10 }) : cities).map((city, index) =>
-            loadingCities ? (
-              <div key={index} className="h-64 animate-pulse rounded-3xl bg-slate-200 dark:bg-slate-800" />
-            ) : (
-              <div key={city.id} className="overflow-hidden rounded-3xl border border-white/20 bg-white shadow-soft dark:border-slate-800 dark:bg-slate-900">
-                <SafeImage
-                  src={city.image}
-                  alt={city.name}
-                  className="h-40 w-full object-cover"
-                  fallbackText={city.name}
-                />
-                <div className="p-4">
-                  <h3 className="font-bold">{city.name}</h3>
-                  <p className="text-sm text-slate-500">{city.country}</p>
-                </div>
+          {sortTripsByStartDate(upTrips).map((trip, i) => (
+            <Reveal key={trip.id} delay={i * 0.12} direction={i % 2 === 0 ? 'left' : 'right'}>
+              <TripCard
+                trip={trip}
+                compact
+                onBuilder={() => navigate(`/trip/${trip.id}/builder`)}
+                onView={() => navigate(`/trip/${trip.id}/view`)}
+              />
+            </Reveal>
+          ))}
+          {!upTrips.length && status !== 'loading' && (
+            <Reveal direction="scale">
+              <div className="rounded-3xl border border-dashed border-slate-300 dark:border-white/10 bg-white/20 dark:bg-slate-950/20 backdrop-blur-md p-12 text-center text-slate-500 dark:text-slate-400">
+                <motion.div
+                  animate={{ rotate: [0, 15, -15, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                >
+                  <FiCompass className="mx-auto text-4xl mb-3 text-slate-400" />
+                </motion.div>
+                No upcoming trips yet. Create your first itinerary.
               </div>
-            )
+            </Reveal>
           )}
         </div>
       </section>
-    </motion.div>
+
+      {/* ══════════════════════════════════════════
+          WORLD DESTINATIONS — 57+ cities
+      ══════════════════════════════════════════ */}
+      <section id="destinations">
+        <Reveal direction="up">
+          <div className="mb-6">
+            <div className="flex items-center gap-2 mb-1">
+              <FiStar className="text-teal-500" />
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-teal-500">World Explorer</span>
+            </div>
+            <h2 className="text-2xl font-black">World Destinations</h2>
+            <p className="text-sm text-slate-500">
+              {WORLD_DESTINATIONS.length} cities · {CONTINENTS.length} continents · hover to reveal · click to plan
+            </p>
+          </div>
+        </Reveal>
+
+        {/* Filters */}
+        <Reveal delay={0.06} direction="up">
+          <div className="flex flex-col sm:flex-row gap-3 mb-5">
+            <div className="relative max-w-xs">
+              <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm" />
+              <input
+                value={search}
+                onChange={e => { setSearch(e.target.value); setShowAll(false); }}
+                placeholder="Search destinations…"
+                className="w-full rounded-2xl border border-white/50 dark:border-white/10 bg-white/40 dark:bg-slate-950/40 pl-10 pr-4 py-2.5 text-sm outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 dark:text-white transition-all backdrop-blur-xl"
+              />
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {['All', ...CONTINENTS].map(c => (
+                <motion.button
+                  key={c}
+                  onClick={() => { setContinent(c); setShowAll(false); }}
+                  whileHover={{ scale: 1.07, y: -2 }}
+                  whileTap={{ scale: 0.94 }}
+                  className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-all ${
+                    continent === c
+                      ? 'bg-gradient-to-r from-teal-500 to-indigo-600 text-white shadow-md shadow-teal-500/20 border-0'
+                      : 'border border-white/50 dark:border-white/10 bg-white/30 dark:bg-slate-950/30 text-slate-600 dark:text-slate-300 hover:border-teal-400 hover:text-teal-500 backdrop-blur-xl'
+                  }`}
+                >
+                  {c}
+                </motion.button>
+              ))}
+            </div>
+          </div>
+        </Reveal>
+
+        {/* Count */}
+        <Reveal delay={0.1}>
+          <div className="mb-4 flex items-center gap-2">
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={filteredDests.length}
+                initial={{ opacity: 0, scale: 0.7 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.25 }}
+                className="inline-flex items-center gap-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 px-3 py-1 text-xs font-semibold text-teal-600 dark:text-teal-400"
+              >
+                <FiMapPin size={11} /> {filteredDests.length} destinations
+              </motion.span>
+            </AnimatePresence>
+            {search && (
+              <motion.button
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                onClick={() => setSearch('')}
+                className="text-xs text-slate-400 hover:text-red-400 transition-colors"
+              >
+                ✕ Clear
+              </motion.button>
+            )}
+          </div>
+        </Reveal>
+
+        {/* Grid */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={continent + search}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6"
+          >
+            {visibleDests.map((dest, i) => (
+              <Reveal key={dest.id} delay={Math.min(i * 0.025, 0.35)} direction="scale">
+                <DestCard dest={dest} index={i} onClick={() => navigate('/create-trip')} />
+              </Reveal>
+            ))}
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Show more */}
+        {filteredDests.length > 18 && (
+          <Reveal>
+            <div className="mt-8 text-center">
+              <motion.button
+                whileHover={{ scale: 1.05, y: -3, boxShadow: '0 12px 28px -8px rgba(20,184,166,0.3)' }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => setShowAll(!showAll)}
+                className="inline-flex items-center gap-2 rounded-full border border-teal-500/30 bg-teal-500/10 px-8 py-3 text-sm font-bold text-teal-500 hover:bg-teal-500/20 transition-all"
+              >
+                {showAll ? '↑ Show Less' : `Show all ${filteredDests.length} destinations ↓`}
+              </motion.button>
+            </div>
+          </Reveal>
+        )}
+
+        {filteredDests.length === 0 && (
+          <Reveal direction="scale">
+            <div className="rounded-3xl border border-dashed border-slate-300 dark:border-slate-700 py-16 text-center text-slate-400">
+              <FiGlobe className="mx-auto text-4xl mb-3" />
+              No destinations found. Try another search.
+            </div>
+          </Reveal>
+        )}
+      </section>
+
+    </div>
   );
 }

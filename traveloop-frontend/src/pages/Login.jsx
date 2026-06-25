@@ -84,7 +84,9 @@ export default function Login() {
         </div>
       </div>
 
-      <div className="flex items-center justify-center px-4 py-10 sm:px-6 lg:px-8 relative z-10 bg-slate-50 dark:bg-slate-950">
+      <div className="flex items-center justify-center px-4 py-10 sm:px-6 lg:px-8 relative z-10 bg-slate-50 dark:bg-slate-950 overflow-hidden">
+        {/* Beautiful high-resolution world map background image theme overlay */}
+        <div className="absolute inset-0 -z-20 opacity-[0.14] dark:opacity-[0.08] pointer-events-none bg-[url('https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?auto=format&fit=crop&w=1920&q=80')] bg-cover bg-center bg-no-repeat bg-fixed" />
         <AnimatePresence mode="wait">
           {view === 'choice' ? (
             <motion.div
@@ -100,20 +102,20 @@ export default function Login() {
               <div className="mt-10 grid gap-6 sm:grid-cols-2">
                 <button 
                   onClick={() => selectRole('user')}
-                  className="group relative flex flex-col items-center rounded-[2.5rem] bg-white p-8 shadow-soft transition-all hover:-translate-y-2 hover:shadow-xl dark:bg-slate-900"
+                  className="group relative flex flex-col items-center rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 border border-white/10 p-8 shadow-soft transition-all hover:-translate-y-2 hover:shadow-xl hover:border-teal-500/30 text-white"
                 >
                   <div className="mb-4 grid h-16 w-16 place-items-center rounded-2xl bg-teal-500/10 text-3xl text-teal-600 transition-colors group-hover:bg-teal-500 group-hover:text-white">🌍</div>
                   <h3 className="text-xl font-bold">Traveler</h3>
-                  <p className="mt-2 text-xs text-slate-500 text-center">Plan trips, share itineraries, and explore 100+ cities.</p>
+                  <p className="mt-2 text-xs text-slate-400 text-center">Plan trips, share itineraries, and explore 100+ cities.</p>
                 </button>
-
+ 
                 <button 
                   onClick={() => selectRole('admin')}
-                  className="group relative flex flex-col items-center rounded-[2.5rem] bg-white p-8 shadow-soft transition-all hover:-translate-y-2 hover:shadow-xl dark:bg-slate-900"
+                  className="group relative flex flex-col items-center rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 border border-white/10 p-8 shadow-soft transition-all hover:-translate-y-2 hover:shadow-xl hover:border-indigo-500/30 text-white"
                 >
                   <div className="mb-4 grid h-16 w-16 place-items-center rounded-2xl bg-blue-500/10 text-3xl text-blue-600 transition-colors group-hover:bg-blue-500 group-hover:text-white">🛡️</div>
                   <h3 className="text-xl font-bold">Admin</h3>
-                  <p className="mt-2 text-xs text-slate-500 text-center">Manage requests, oversee users, and view analytics.</p>
+                  <p className="mt-2 text-xs text-slate-400 text-center">Manage requests, oversee users, and view analytics.</p>
                 </button>
               </div>
             </motion.div>

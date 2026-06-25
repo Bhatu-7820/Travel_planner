@@ -46,41 +46,41 @@ export default function CreateTrip() {
 
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-3xl">
-      <div className="rounded-[2rem] border border-white/20 bg-white p-6 shadow-soft dark:border-slate-800 dark:bg-slate-900">
+      <div className="rounded-[2rem] border border-white/50 dark:border-white/10 bg-white/40 dark:bg-slate-950/40 p-6 shadow-soft backdrop-blur-xl">
         <h1 className="text-3xl font-black">Create a new trip</h1>
-        <p className="mt-2 text-sm text-slate-500">Set the foundation before building the itinerary.</p>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">Set the foundation before building the itinerary.</p>
 
         <form onSubmit={submit} className="mt-8 grid gap-5">
           <div>
-            <label className="mb-1 block text-sm font-medium">Trip name</label>
-            <input value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-950" />
+            <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Trip name</label>
+            <input value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} className="w-full rounded-2xl border border-slate-300/60 dark:border-white/10 bg-slate-900/5 dark:bg-white/5 px-4 py-3 focus:border-teal-500 focus:outline-none transition-all backdrop-blur-sm" />
             {errors.name && <p className="mt-1 text-sm text-rose-500">{errors.name}</p>}
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-1 block text-sm font-medium">Start date</label>
-              <input type="date" value={form.startDate} onChange={(e) => setForm((p) => ({ ...p, startDate: e.target.value }))} className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-950" />
+              <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Start date</label>
+              <input type="date" value={form.startDate} onChange={(e) => setForm((p) => ({ ...p, startDate: e.target.value }))} className="w-full rounded-2xl border border-slate-300/60 dark:border-white/10 bg-slate-900/5 dark:bg-white/5 px-4 py-3 focus:border-teal-500 focus:outline-none transition-all backdrop-blur-sm" />
               {errors.startDate && <p className="mt-1 text-sm text-rose-500">{errors.startDate}</p>}
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium">End date</label>
-              <input type="date" value={form.endDate} onChange={(e) => setForm((p) => ({ ...p, endDate: e.target.value }))} className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-950" />
+              <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">End date</label>
+              <input type="date" value={form.endDate} onChange={(e) => setForm((p) => ({ ...p, endDate: e.target.value }))} className="w-full rounded-2xl border border-slate-300/60 dark:border-white/10 bg-slate-900/5 dark:bg-white/5 px-4 py-3 focus:border-teal-500 focus:outline-none transition-all backdrop-blur-sm" />
               {errors.endDate && <p className="mt-1 text-sm text-rose-500">{errors.endDate}</p>}
             </div>
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium">Description</label>
-            <textarea value={form.description} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} rows="4" className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-950" />
+            <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Description</label>
+            <textarea value={form.description} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} rows="4" className="w-full rounded-2xl border border-slate-300/60 dark:border-white/10 bg-slate-900/5 dark:bg-white/5 px-4 py-3 focus:border-teal-500 focus:outline-none transition-all backdrop-blur-sm" />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium">Cover photo URL (optional)</label>
-            <input value={form.coverPhoto} onChange={(e) => setForm((p) => ({ ...p, coverPhoto: e.target.value }))} placeholder="https://..." className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-950" />
+            <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Cover photo URL (optional)</label>
+            <input value={form.coverPhoto} onChange={(e) => setForm((p) => ({ ...p, coverPhoto: e.target.value }))} placeholder="https://..." className="w-full rounded-2xl border border-slate-300/60 dark:border-white/10 bg-slate-900/5 dark:bg-white/5 px-4 py-3 focus:border-teal-500 focus:outline-none transition-all backdrop-blur-sm" />
           </div>
 
-          <button disabled={saving} className="rounded-2xl bg-teal-500 px-5 py-3 font-semibold text-white shadow-soft">
+          <button disabled={saving} className="rounded-2xl bg-teal-500 px-5 py-3 font-semibold text-white shadow-soft hover:bg-teal-600 transition-colors">
             {saving ? 'Creating...' : 'Create trip'}
           </button>
         </form>

@@ -84,7 +84,7 @@ export default function ActivityPicker({ isOpen, onClose, tripId, stopId, city, 
       
       const aiActivities = data.map(a => ({ ...a, id: `ai_${Math.random()}` }));
       setActivities(prev => [...aiActivities, ...prev]);
-      toast.success('AI generated new ideas!');
+      toast.success('Generated new activity ideas!');
     } catch (err) {
       toast.error(getErrorMessage(err));
     } finally {
@@ -102,7 +102,7 @@ export default function ActivityPicker({ isOpen, onClose, tripId, stopId, city, 
           </div>
           <div className="flex gap-2">
             <button onClick={generateAIActivities} disabled={generatingAI} className="rounded-full bg-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-purple-500/30 transition hover:bg-purple-700">
-              {generatingAI ? 'Thinking...' : '✨ Ask AI'}
+              {generatingAI ? 'Thinking...' : '✨ Generate Ideas'}
             </button>
             <button onClick={onClose} className="rounded-full p-2 hover:bg-slate-100 dark:hover:bg-slate-800">
               <FiX />

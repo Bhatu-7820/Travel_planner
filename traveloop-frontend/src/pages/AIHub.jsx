@@ -20,6 +20,36 @@ import { fetchTrips } from '@/store/slices/tripSlice';
 import { tripService } from '@/services/tripService';
 import { getErrorMessage } from '@/utils/helpers';
 import Skeleton from '@/components/Skeleton';
+import { WORLD_DESTINATIONS } from '@/data/worldDestinations';
+
+const getDestinationImage = (name) => {
+  if (!name) return 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=500&h=350&fit=crop&q=80';
+  const query = name.split(',')[0].trim().toLowerCase();
+  const found = WORLD_DESTINATIONS.find(d => d.name.toLowerCase() === query);
+  if (found) return found.image;
+  
+  const hash = query.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const fallbackIds = [
+    '1507525428034-b723cf961d3e', // Beach
+    '1469854523086-cc02fe5d8800', // Road trip
+    '1476514525535-07fb3b4ae5f1', // Boat
+    '1506744038136-46273834b3fb', // Valley
+    '1533105079780-92b9be482077', // Santorini-like
+    '1472214222555-d40058580337'  // Nature
+  ];
+  return `https://images.unsplash.com/photo-${fallbackIds[hash % fallbackIds.length]}?w=500&h=350&fit=crop&auto=format&q=80`;
+};
+
+const getHotelImage = (index) => {
+  const hotelIds = [
+    '1566073771259-6a8506099945', // Luxury room
+    '1520250497591-112f2f40a3f4', // Resort pool
+    '1584132967334-10e028bd69f7', // Bed/window
+    '1540555700478-4be289fbecef', // Resort lounge
+    '1571896349842-33c89424de2d'  // Poolside
+  ];
+  return `https://images.unsplash.com/photo-${hotelIds[index % hotelIds.length]}?w=500&h=350&fit=crop&auto=format&q=80`;
+};
 
 const COLORS = ['#0d9488', '#2563eb', '#4f46e5', '#db2777', '#f59e0b', '#dc2626'];
 
@@ -140,7 +170,7 @@ export default function AIHub() {
     const endStr = end.toISOString().slice(0, 10);
 
     setSaveTripForm({
-      name: `AI Trip to ${itineraryForm.destination}`,
+      name: `Trip to ${itineraryForm.destination}`,
       startDate: today,
       endDate: endStr
     });
@@ -198,7 +228,7 @@ export default function AIHub() {
         await tripService.addStop(newTrip.id || newTrip._id, stopPayload);
       }
 
-      toast.success('AI Itinerary saved as a real interactive trip!');
+      toast.success('Itinerary saved as a real interactive trip!');
       dispatch(fetchTrips());
       setIsSaveTripModalOpen(false);
       navigate(`/trip/${newTrip.id || newTrip._id}/view`);
@@ -270,13 +300,13 @@ export default function AIHub() {
         
         <div className="relative z-10 max-w-4xl">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-teal-500 to-indigo-600 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white shadow-soft">
-            <FiActivity className="animate-pulse" /> Traveloop AI Lab
+            <FiActivity className="animate-pulse" /> Traveloop Travel Lab
           </span>
           <h1 className="mt-4 text-4xl sm:text-5xl font-black bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
-            AI Travel Assistant Hub
+            Travel Planner Lab
           </h1>
           <p className="mt-3 text-slate-400 text-base max-w-2xl">
-            Leverage advanced AI agents to plan budgets, design schedules, find ideal hotels, package packing checklists, and optimize city pathways.
+            Leverage advanced planning agents to plan budgets, design schedules, find ideal hotels, package packing checklists, and optimize city pathways.
           </p>
         </div>
       </section>
@@ -285,11 +315,11 @@ export default function AIHub() {
       <div className="grid gap-8 lg:grid-cols-12">
         {/* Left Hand Tab Navigation Menu */}
         <aside className="lg:col-span-3">
-          <div className="rounded-[2rem] border border-white/20 bg-white p-4 shadow-soft dark:border-slate-800 dark:bg-slate-900 sticky top-24">
-            <h2 className="px-4 py-2 text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">AI Agents Menu</h2>
+          <div className="rounded-[2rem] border border-white/30 bg-white/75 p-4 shadow-soft dark:border-slate-800/85 dark:bg-slate-900/75 backdrop-blur-xl sticky top-24">
+            <h2 className="px-4 py-2 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Planner Menu</h2>
             <nav className="mt-3 space-y-1">
               {[
-                { id: 'analytics', label: 'AI Travel Insights', icon: FiTrendingUp },
+                { id: 'analytics', label: 'Travel Insights', icon: FiTrendingUp },
                 { id: 'itinerary', label: 'Itinerary Planner', icon: FiMap },
                 { id: 'budget', label: 'Budget Planner', icon: FiDollarSign },
                 { id: 'destination', label: 'Discovery Engine', icon: FiCompass },
@@ -306,7 +336,7 @@ export default function AIHub() {
                     className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-semibold transition ${
                       isActive 
                         ? 'bg-gradient-to-r from-teal-500 to-blue-600 text-white shadow-soft' 
-                        : 'text-slate-600 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-800/50'
+                        : 'text-slate-700 hover:bg-white/40 dark:text-slate-300 dark:hover:bg-slate-800/40'
                     }`}
                   >
                     <IconComponent className={`text-base ${isActive ? 'text-white' : 'text-slate-400'}`} />
@@ -320,7 +350,7 @@ export default function AIHub() {
 
         {/* Right Hand Content Panel */}
         <main className="lg:col-span-9">
-          <div className="rounded-[2rem] border border-white/20 bg-white p-6 shadow-soft dark:border-slate-800 dark:bg-slate-900 min-h-[500px] flex flex-col justify-between">
+          <div className="rounded-[2rem] border border-white/30 bg-white/75 p-6 shadow-soft dark:border-slate-800/85 dark:bg-slate-900/75 backdrop-blur-xl min-h-[500px] flex flex-col justify-between">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}
@@ -334,8 +364,8 @@ export default function AIHub() {
                 {activeTab === 'analytics' && (
                   <div className="space-y-6">
                     <div>
-                      <h2 className="text-2xl font-black">AI Travel Insights & Trends</h2>
-                      <p className="text-sm text-slate-500">Intelligent statistics gathered from your travel habits and preferences.</p>
+                      <h2 className="text-2xl font-black">Travel Insights & Trends</h2>
+                      <p className="text-sm text-slate-500">Statistics gathered from your travel habits and preferences.</p>
                     </div>
 
                     {analyticsStatus === 'loading' && (
@@ -366,7 +396,7 @@ export default function AIHub() {
 
                         {/* Custom AI Insights Section */}
                         <div className="p-6 rounded-3xl bg-slate-900 text-white relative overflow-hidden border border-slate-800">
-                          <div className="absolute top-0 right-0 p-4 opacity-5 text-8xl font-black">AI</div>
+                          <div className="absolute top-0 right-0 p-4 opacity-5 text-8xl font-black">PLAN</div>
                           <h4 className="font-bold text-teal-400 flex items-center gap-1 text-sm uppercase tracking-wider">
                             <FiInfo /> Personalized Recommendations
                           </h4>
@@ -383,7 +413,7 @@ export default function AIHub() {
                         {/* Recharts Diagrams */}
                         <div className="grid gap-6 md:grid-cols-2 mt-6">
                           {/* Popular Destinations Bar Chart */}
-                          <div className="p-5 rounded-3xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/20">
+                          <div className="p-5 rounded-3xl border border-white/20 bg-white/40 dark:bg-slate-950/40 backdrop-blur-md">
                             <h4 className="font-bold text-sm mb-4">Trending Global Destinations</h4>
                             <div className="h-64">
                               <ResponsiveContainer width="100%" height="100%">
@@ -398,7 +428,7 @@ export default function AIHub() {
                           </div>
 
                           {/* Budget trends Area Chart */}
-                          <div className="p-5 rounded-3xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/20">
+                          <div className="p-5 rounded-3xl border border-white/20 bg-white/40 dark:bg-slate-950/40 backdrop-blur-md">
                             <h4 className="font-bold text-sm mb-4">Estimated Travel Spending Curve (INR)</h4>
                             <div className="h-64">
                               <ResponsiveContainer width="100%" height="100%">
@@ -421,7 +451,7 @@ export default function AIHub() {
                 {activeTab === 'itinerary' && (
                   <div className="space-y-6">
                     <div>
-                      <h2 className="text-2xl font-black">AI Itinerary Planner</h2>
+                      <h2 className="text-2xl font-black">Itinerary Planner</h2>
                       <p className="text-sm text-slate-500">Draft full day-wise schedules with optimized sights, restaurants, and costs.</p>
                     </div>
 
@@ -515,7 +545,7 @@ export default function AIHub() {
                           type="submit" 
                           className="w-full rounded-2xl bg-teal-500 py-3.5 font-bold text-white shadow-soft hover:bg-teal-600 transition"
                         >
-                          Generate AI Itinerary
+                          Generate Itinerary
                         </button>
                       </form>
                     )}
@@ -533,31 +563,36 @@ export default function AIHub() {
 
                     {itineraryStatus === 'succeeded' && generatedItinerary && (
                       <div className="space-y-6">
-                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b pb-4">
-                          <div>
-                            <h3 className="text-2xl font-black">{generatedItinerary.itinerary.tripName}</h3>
-                            <p className="text-sm text-slate-500">Destination: {generatedItinerary.destination} | Budget limit: ₹{generatedItinerary.budget.toLocaleString()}</p>
+                        {/* Cover Image */}
+                        <div className="h-48 w-full rounded-3xl overflow-hidden relative border border-slate-200 dark:border-slate-800 shadow-sm">
+                          <img src={getDestinationImage(generatedItinerary.destination)} alt={generatedItinerary.destination} className="h-full w-full object-cover" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent" />
+                          <div className="absolute bottom-4 left-6 text-white pr-6">
+                            <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-teal-400 bg-teal-500/10 border border-teal-500/25 px-2.5 py-1 rounded-full">Itinerary</span>
+                            <h3 className="text-2xl font-black mt-2 leading-tight">{generatedItinerary.itinerary.tripName}</h3>
+                            <p className="text-xs text-white/80 mt-1">Destination: {generatedItinerary.destination} | Budget limit: ₹{generatedItinerary.budget.toLocaleString()}</p>
                           </div>
-                          <div className="flex gap-2">
-                            <button 
-                              onClick={() => dispatch(clearItinerary())} 
-                              className="rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-2.5 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800"
-                            >
-                              Reset
-                            </button>
-                            <button 
-                              onClick={openSaveTripModal} 
-                              className="rounded-xl bg-teal-500 px-4 py-2.5 text-sm font-bold text-white shadow-soft hover:bg-teal-600"
-                            >
-                              Apply to My Trips
-                            </button>
-                          </div>
+                        </div>
+
+                        <div className="flex justify-end gap-2">
+                          <button 
+                            onClick={() => dispatch(clearItinerary())} 
+                            className="rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-2.5 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800"
+                          >
+                            Reset
+                          </button>
+                          <button 
+                            onClick={openSaveTripModal} 
+                            className="rounded-xl bg-teal-500 px-4 py-2.5 text-sm font-bold text-white shadow-soft hover:bg-teal-600"
+                          >
+                            Apply to My Trips
+                          </button>
                         </div>
 
                         {/* General Optimization Tip */}
                         <div className="p-4 rounded-2xl bg-teal-500/5 dark:bg-teal-500/10 border border-teal-500/20 text-teal-700 dark:text-teal-400 text-sm flex gap-2">
                           <FiInfo className="shrink-0 text-lg" />
-                          <p><b>AI optimization Note:</b> {generatedItinerary.itinerary.generalOptimization}</p>
+                          <p><b>Optimization Note:</b> {generatedItinerary.itinerary.generalOptimization}</p>
                         </div>
 
                         {/* Days timeline */}
@@ -623,7 +658,7 @@ export default function AIHub() {
                 {activeTab === 'budget' && (
                   <div className="space-y-6">
                     <div>
-                      <h2 className="text-2xl font-black">AI Budget Planner</h2>
+                      <h2 className="text-2xl font-black">Budget Planner</h2>
                       <p className="text-sm text-slate-500">Estimate hotel, food, transport, emergency buffer, and shopping costs automatically.</p>
                     </div>
 
@@ -669,7 +704,7 @@ export default function AIHub() {
                           type="submit" 
                           className="w-full rounded-2xl bg-teal-500 py-3.5 font-bold text-white shadow-soft hover:bg-teal-600 transition"
                         >
-                          Calculate AI Budget
+                          Calculate Trip Budget
                         </button>
                       </form>
                     )}
@@ -686,35 +721,40 @@ export default function AIHub() {
 
                     {budgetStatus === 'succeeded' && generatedBudget && (
                       <div className="space-y-6">
-                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b pb-4">
-                          <div>
-                            <h3 className="text-2xl font-black">AI Cost Estimate: {generatedBudget.destination}</h3>
-                            <p className="text-sm text-slate-500">Tier: {generatedBudget.budgetType} | Duration: {generatedBudget.days} days</p>
+                        {/* Cover Image */}
+                        <div className="h-48 w-full rounded-3xl overflow-hidden relative border border-slate-200 dark:border-slate-800 shadow-sm">
+                          <img src={getDestinationImage(generatedBudget.destination)} alt={generatedBudget.destination} className="h-full w-full object-cover" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent" />
+                          <div className="absolute bottom-4 left-6 text-white pr-6">
+                            <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-teal-400 bg-teal-500/10 border border-teal-500/25 px-2.5 py-1 rounded-full">Budget Estimate</span>
+                            <h3 className="text-2xl font-black mt-2 leading-tight">Cost Estimate: {generatedBudget.destination}</h3>
+                            <p className="text-xs text-white/80 mt-1">Tier: {generatedBudget.budgetType} | Duration: {generatedBudget.days} days</p>
                           </div>
-                          <div className="flex gap-2">
-                            <button 
-                              onClick={() => dispatch(clearBudget())} 
-                              className="rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-2.5 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800"
+                        </div>
+
+                        <div className="flex justify-end gap-2">
+                          <button 
+                            onClick={() => dispatch(clearBudget())} 
+                            className="rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-2 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800"
+                          >
+                            Reset
+                          </button>
+                          {trips.length > 0 && (
+                            <select 
+                              onChange={(e) => {
+                                if (e.target.value) {
+                                  applyBudgetLimitToTrip(e.target.value);
+                                  e.target.value = '';
+                                }
+                              }}
+                              className="rounded-xl bg-teal-500 text-white font-semibold text-sm px-4 py-2.5 outline-none hover:bg-teal-600 cursor-pointer"
                             >
-                              Reset
-                            </button>
-                            {trips.length > 0 && (
-                              <select 
-                                onChange={(e) => {
-                                  if (e.target.value) {
-                                    applyBudgetLimitToTrip(e.target.value);
-                                    e.target.value = '';
-                                  }
-                                }}
-                                className="rounded-xl bg-teal-500 text-white font-semibold text-sm px-4 py-2.5 outline-none hover:bg-teal-600 cursor-pointer"
-                              >
-                                <option value="">Apply limit to Trip...</option>
-                                {trips.map(t => (
-                                  <option key={t.id || t._id} value={t.id || t._id}>{t.name}</option>
-                                ))}
-                              </select>
-                            )}
-                          </div>
+                              <option value="">Apply limit to Trip...</option>
+                              {trips.map(t => (
+                                <option key={t.id || t._id} value={t.id || t._id}>{t.name}</option>
+                              ))}
+                            </select>
+                          )}
                         </div>
 
                         {/* Value totals */}
@@ -738,7 +778,7 @@ export default function AIHub() {
                         </div>
 
                         <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 text-white text-xs leading-relaxed">
-                          <h4 className="font-bold text-teal-400 text-sm uppercase mb-2">AI financial Analysis</h4>
+                          <h4 className="font-bold text-teal-400 text-sm uppercase mb-2">Budget Analysis Reasoning</h4>
                           <p>{generatedBudget.budgetEstimation.reasoning}</p>
                         </div>
 
@@ -799,7 +839,7 @@ export default function AIHub() {
                 {activeTab === 'destination' && (
                   <div className="space-y-6">
                     <div>
-                      <h2 className="text-2xl font-black">AI Destination Discovery Engine</h2>
+                      <h2 className="text-2xl font-black">Destination Discovery Engine</h2>
                       <p className="text-sm text-slate-500">Uncover ideal cities based on weather preferences, budget bounds, and travel styles.</p>
                     </div>
 
@@ -925,16 +965,20 @@ export default function AIHub() {
 
                         <div className="grid gap-6 sm:grid-cols-3">
                           {recommendedDestinations.results.destinations.map((dest, idx) => (
-                            <div key={idx} className="rounded-3xl border border-white/20 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-soft overflow-hidden flex flex-col justify-between">
+                            <div key={idx} className="rounded-3xl border border-white/30 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl shadow-soft overflow-hidden flex flex-col justify-between hover-lift">
+                              {/* Destination Image Cover */}
+                              <div className="h-40 w-full overflow-hidden relative bg-slate-900">
+                                <img src={getDestinationImage(dest.name)} alt={dest.name} className="h-full w-full object-cover" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 to-transparent" />
+                                <span className="absolute top-3 right-3 bg-white/20 backdrop-blur-sm text-white text-[10px] px-2.5 py-1 rounded-full font-bold flex items-center gap-0.5 border border-white/10">
+                                  <FiPercent /> {dest.matchPercentage} match
+                                </span>
+                              </div>
+                              
                               <div className="p-5 space-y-3">
-                                <div className="flex justify-between items-start gap-2">
-                                  <div>
-                                    <h4 className="font-extrabold text-lg">{dest.name}</h4>
-                                    <span className="text-xs text-slate-400">{dest.country}</span>
-                                  </div>
-                                  <span className="bg-teal-500/10 text-teal-600 text-xs px-2.5 py-1 rounded-full font-bold flex items-center gap-0.5">
-                                    <FiPercent /> {dest.matchPercentage} match
-                                  </span>
+                                <div>
+                                  <h4 className="font-extrabold text-lg">{dest.name}</h4>
+                                  <span className="text-xs text-slate-400">{dest.country}</span>
                                 </div>
                                 <p className="text-xs text-slate-500 leading-relaxed">{dest.whyIdeal}</p>
                                 <div className="text-xs space-y-1">
@@ -964,8 +1008,8 @@ export default function AIHub() {
                 {activeTab === 'hotels' && (
                   <div className="space-y-6">
                     <div>
-                      <h2 className="text-2xl font-black">AI Hotel Recommendation</h2>
-                      <p className="text-sm text-slate-500">Find properties with targeted rating ranges, nearby points of interest, and clear AI rationales.</p>
+                      <h2 className="text-2xl font-black">Hotel Recommendations</h2>
+                      <p className="text-sm text-slate-500">Find properties with targeted rating ranges, nearby points of interest, and clear rationales.</p>
                     </div>
 
                     {!recommendedHotels && hotelStatus !== 'loading' && (
@@ -1049,7 +1093,16 @@ export default function AIHub() {
 
                         <div className="grid gap-6 sm:grid-cols-3">
                           {recommendedHotels.results.hotels.map((hotel, idx) => (
-                            <div key={idx} className="rounded-3xl border border-white/20 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-soft overflow-hidden flex flex-col justify-between">
+                            <div key={idx} className="rounded-3xl border border-white/30 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl shadow-soft overflow-hidden flex flex-col justify-between hover-lift">
+                              {/* Hotel Image Cover */}
+                              <div className="h-40 w-full overflow-hidden relative bg-slate-900">
+                                <img src={getHotelImage(idx)} alt={hotel.name} className="h-full w-full object-cover" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 to-transparent" />
+                                <span className="absolute top-3 right-3 bg-orange-500 text-white text-[10px] px-2.5 py-0.5 rounded-full font-bold flex items-center gap-0.5 shadow-md">
+                                  ⭐ {hotel.rating}
+                                </span>
+                              </div>
+                              
                               <div className="p-5 space-y-3">
                                 <div className="flex justify-between items-start gap-1">
                                   <h4 className="font-extrabold text-base leading-tight">{hotel.name}</h4>
@@ -1241,7 +1294,7 @@ export default function AIHub() {
                 {activeTab === 'optimize' && (
                   <div className="space-y-6">
                     <div>
-                      <h2 className="text-2xl font-black">AI Trip Optimizer</h2>
+                      <h2 className="text-2xl font-black">Smart Trip Optimizer</h2>
                       <p className="text-sm text-slate-500">Provide an existing multi-city itinerary to optimize travel sequencing and lower travel expenses.</p>
                     </div>
 
@@ -1322,7 +1375,7 @@ export default function AIHub() {
 
                             {/* Improvement list */}
                             <div className="space-y-3">
-                              <h4 className="font-bold text-sm uppercase text-slate-500 tracking-wider">AI Optimization Improvements</h4>
+                              <h4 className="font-bold text-sm uppercase text-slate-500 tracking-wider">Smart Optimization Improvements</h4>
                               <div className="grid gap-3 sm:grid-cols-2">
                                 {optimizedRoute.improvements.map((imp, idx) => (
                                   <div key={idx} className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/20 border border-slate-100 dark:border-slate-800 text-xs">
@@ -1350,9 +1403,9 @@ export default function AIHub() {
       {/* SAVE TRIP POPUP DIALOG */}
       {isSaveTripModalOpen && (
         <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md rounded-[2rem] border border-white/20 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
-            <h3 className="text-2xl font-black">Save AI Itinerary to Trips</h3>
-            <p className="text-xs text-slate-400 mt-1">This will initialize a new active trip on your dashboard, and insert the AI generated days as milestones.</p>
+          <div className="w-full max-w-md rounded-[2rem] border border-white/30 bg-white/80 p-6 shadow-2xl dark:border-slate-800/80 dark:bg-slate-900/80 backdrop-blur-xl">
+            <h3 className="text-2xl font-black">Save Itinerary to Trips</h3>
+            <p className="text-xs text-slate-400 mt-1">This will initialize a new active trip on your dashboard, and insert the generated days as milestones.</p>
 
             <form onSubmit={saveItineraryAsRealTrip} className="mt-6 space-y-4">
               <div>
@@ -1361,7 +1414,7 @@ export default function AIHub() {
                   type="text"
                   value={saveTripForm.name}
                   onChange={e => setSaveTripForm(p => ({ ...p, name: e.target.value }))}
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950"
+                  className="w-full rounded-xl border border-slate-200 bg-white/50 px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950/50 backdrop-blur-sm focus:border-teal-500 focus:outline-none transition-all"
                   required
                 />
               </div>
@@ -1373,7 +1426,7 @@ export default function AIHub() {
                     type="date"
                     value={saveTripForm.startDate}
                     onChange={e => setSaveTripForm(p => ({ ...p, startDate: e.target.value }))}
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950"
+                    className="w-full rounded-xl border border-slate-200 bg-white/50 px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950/50 backdrop-blur-sm focus:border-teal-500 focus:outline-none transition-all"
                     required
                   />
                 </div>
@@ -1383,7 +1436,7 @@ export default function AIHub() {
                     type="date"
                     value={saveTripForm.endDate}
                     onChange={e => setSaveTripForm(p => ({ ...p, endDate: e.target.value }))}
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950"
+                    className="w-full rounded-xl border border-slate-200 bg-white/50 px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950/50 backdrop-blur-sm focus:border-teal-500 focus:outline-none transition-all"
                     required
                   />
                 </div>
@@ -1393,7 +1446,7 @@ export default function AIHub() {
                 <button
                   type="button"
                   onClick={() => setIsSaveTripModalOpen(false)}
-                  className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800"
+                  className="rounded-xl border border-slate-200 bg-white/20 px-4 py-2 text-sm font-semibold hover:bg-white/40 dark:border-slate-700 dark:hover:bg-slate-800"
                 >
                   Cancel
                 </button>

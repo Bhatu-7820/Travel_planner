@@ -3,13 +3,13 @@ import { formatDateRange } from '@/utils/helpers';
 
 export default function TripCard({ trip, onEdit, onDelete, onView, onBuilder, compact = false }) {
   return (
-    <article className="overflow-hidden rounded-3xl border border-white/30 bg-white/80 shadow-soft backdrop-blur dark:border-slate-800 dark:bg-slate-900/80">
+    <article className="group overflow-hidden rounded-[2rem] border border-white/50 dark:border-white/10 bg-white/40 dark:bg-slate-950/40 shadow-soft backdrop-blur-xl hover:-translate-y-1 hover:shadow-xl hover:border-teal-500/30 transition-all duration-300">
       <div className="grid gap-0 md:grid-cols-3">
-        <div className="relative min-h-48 md:col-span-1">
+        <div className="relative min-h-48 md:col-span-1 overflow-hidden">
           <img
             src={trip.coverPhoto}
             alt={trip.name}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-950/10 to-transparent" />
         </div>
@@ -38,17 +38,17 @@ export default function TripCard({ trip, onEdit, onDelete, onView, onBuilder, co
               </button>
             )}
             {onView && (
-              <button onClick={() => onView(trip)} className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800">
+              <button onClick={() => onView(trip)} className="inline-flex items-center gap-2 rounded-full border border-slate-300/60 dark:border-white/10 bg-slate-900/5 dark:bg-white/5 px-4 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-900/10 dark:hover:bg-white/15 hover:text-slate-900 dark:hover:text-white transition-all">
                 View <FiEye />
               </button>
             )}
             {onEdit && (
-              <button onClick={() => onEdit(trip)} className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800">
+              <button onClick={() => onEdit(trip)} className="inline-flex items-center gap-2 rounded-full border border-slate-300/60 dark:border-white/10 bg-slate-900/5 dark:bg-white/5 px-4 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-900/10 dark:hover:bg-white/15 hover:text-slate-900 dark:hover:text-white transition-all">
                 Edit <FiEdit2 />
               </button>
             )}
             {onDelete && (
-              <button onClick={() => onDelete(trip)} className="inline-flex items-center gap-2 rounded-full border border-rose-200 px-4 py-2 text-sm font-semibold text-rose-600 hover:bg-rose-50 dark:border-rose-900/50 dark:text-rose-300 dark:hover:bg-rose-950/60">
+              <button onClick={() => onDelete(trip)} className="inline-flex items-center gap-2 rounded-full border border-rose-200 px-4 py-2 text-sm font-semibold text-rose-600 hover:bg-rose-50 dark:border-rose-900/50 dark:text-rose-300 dark:hover:bg-rose-950/60 transition-all">
                 Delete <FiTrash2 />
               </button>
             )}

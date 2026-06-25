@@ -92,7 +92,7 @@ export default function AIAssistant() {
                   <FiInfo className="text-sm" />
                 </div>
                 <div>
-                  <span className="font-bold block text-sm sm:text-base leading-none">Traveloop AI</span>
+                  <span className="font-bold block text-sm sm:text-base leading-none">Traveloop</span>
                   <span className="text-[10px] text-white/80">Premium Travel Companion</span>
                 </div>
               </div>
@@ -133,7 +133,7 @@ export default function AIAssistant() {
                   <div className="p-4 rounded-full bg-gradient-to-br from-teal-500/10 to-indigo-600/10 dark:from-teal-500/20 dark:to-indigo-600/20 border border-teal-500/20">
                     <FiMessageSquare className="text-4xl text-teal-500 animate-pulse" />
                   </div>
-                  <h3 className="font-bold text-lg text-slate-800 dark:text-white">AI Travel Companion</h3>
+                  <h3 className="font-bold text-lg text-slate-800 dark:text-white">Travel Companion</h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 max-w-[240px] leading-relaxed">
                     Log in to unlock custom itineraries, smart packing lists, budget planning, and 24/7 personalized travel assistance.
                   </p>
@@ -209,13 +209,11 @@ export default function AIAssistant() {
         )}
       </AnimatePresence>
 
-      {/* Floating Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="grid h-14 w-14 place-items-center rounded-full bg-gradient-to-br from-teal-500 via-blue-500 to-indigo-600 text-2xl text-white shadow-lg transition duration-300 hover:scale-110 active:scale-95 relative group overflow-hidden"
+        className="grid h-14 w-14 place-items-center rounded-full bg-gradient-to-br from-teal-500 to-blue-500 text-2xl text-white shadow-lg transition hover:scale-110 active:scale-95 shadow-teal-500/25"
       >
-        <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform"></div>
-        <FiMessageSquare className="relative z-10" />
+        <FiMessageSquare />
       </button>
     </div>
   );

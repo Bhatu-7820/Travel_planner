@@ -242,7 +242,7 @@ export default function ItineraryView({ readOnly = false }) {
 
             <div className="rounded-[2rem] bg-slate-900 p-6 text-white shadow-soft">
               <h3 className="text-xl font-bold">Weather Forecast</h3>
-              <p className="mt-1 text-sm text-slate-400">AI-predicted forecast for {trip.stops?.[0]?.city || 'your destination'}.</p>
+              <p className="mt-1 text-sm text-slate-400">Weather forecast for {trip.stops?.[0]?.city || 'your destination'}.</p>
               <div className="mt-6 flex justify-between px-2">
                 {['Today', 'Mon', 'Tue', 'Wed', 'Thu'].map((day, i) => (
                   <div key={day} className="flex flex-col items-center gap-2">
