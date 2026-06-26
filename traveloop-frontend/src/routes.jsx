@@ -17,7 +17,7 @@ import TripNotes from '@/pages/TripNotes';
 import AdminDashboard from '@/pages/AdminDashboard';
 import Support from '@/pages/Support';
 import AgentMarketplace from '@/pages/AgentMarketplace';
-import { useState, useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
 import AIHub from '@/pages/AIHub';
@@ -75,8 +75,7 @@ function SideTickerStrips() {
 }
 
 function MainLayout() {
-  const [scrollY, setScrollY] = useState(0);
-  const [parallaxEnabled, setParallaxEnabled] = useState(false);
+  const backgroundRef = useRef(null);
 
   useEffect(() => {
     const canUseParallax = () => (
@@ -85,17 +84,32 @@ function MainLayout() {
     );
 
     let frame = 0;
+    let parallaxEnabled = false;
+    const background = backgroundRef.current;
+
+    const updateBackground = () => {
+      if (!background) return;
+      if (!parallaxEnabled) {
+        background.style.transform = 'none';
+        background.style.willChange = 'auto';
+        return;
+      }
+
+      const scrollY = window.scrollY;
+      background.style.transform = `translate3d(0, ${scrollY * 0.12}px, 0) scale(${1 + scrollY * 0.00012})`;
+      background.style.willChange = 'transform';
+    };
+
     const updateParallaxMode = () => {
-      const enabled = canUseParallax();
-      setParallaxEnabled(enabled);
-      if (!enabled) setScrollY(0);
+      parallaxEnabled = canUseParallax();
+      updateBackground();
     };
 
     const handleScroll = () => {
-      if (!canUseParallax()) return;
+      if (!parallaxEnabled) return;
       if (frame) return;
       frame = window.requestAnimationFrame(() => {
-        setScrollY(window.scrollY);
+        updateBackground();
         frame = 0;
       });
     };
@@ -116,9 +130,9 @@ function MainLayout() {
         {/* Beautiful high-resolution tropical sunset background image theme overlay with GSAP-like parallax scroll scale effect */}
         <div className="absolute inset-0 -z-20 pointer-events-none overflow-hidden">
           <div 
-            className="absolute inset-0 opacity-[0.48] dark:opacity-[0.58] bg-[url('/paradise_sunset.jpg')] bg-cover bg-center bg-no-repeat bg-fixed transition-transform duration-100 ease-out" 
+            ref={backgroundRef}
+            className="absolute inset-0 opacity-[0.48] dark:opacity-[0.58] bg-[url('/paradise_sunset.jpg')] bg-cover bg-center bg-no-repeat" 
             style={{
-              transform: parallaxEnabled ? `translateY(${scrollY * 0.12}px) scale(${1 + scrollY * 0.00012})` : 'none',
               WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.85) 30%, rgba(0,0,0,0.2) 80%, rgba(0,0,0,0) 100%)',
               maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.85) 30%, rgba(0,0,0,0.2) 80%, rgba(0,0,0,0) 100%)',
             }}

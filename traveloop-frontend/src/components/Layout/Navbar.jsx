@@ -7,6 +7,7 @@ import { toggleTheme } from '@/store/slices/uiSlice';
 import { fetchNotifications, markAsRead, markAllAsRead, deleteNotification } from '@/store/slices/notificationSlice';
 import { authService } from '@/services/authService';
 import { getInitials, cn } from '@/utils/helpers';
+import Globe3D from '@/components/Globe3D';
 import toast from 'react-hot-toast';
 
 const navLinkClass = ({ isActive }) =>
@@ -110,14 +111,12 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-[60] border-b border-white/20 bg-white/80 backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/80">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-3 sm:gap-3 sm:px-6 lg:px-8">
-        <Link to="/" className="flex min-w-0 items-center gap-2 sm:gap-3">
-          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-teal-500 via-blue-500 to-orange-400 text-base font-black text-white shadow-soft sm:h-10 sm:w-10 sm:text-lg">
-            T
-          </div>
-          <div className="min-w-0">
-            <p className="truncate text-base font-extrabold tracking-tight sm:text-lg">Traveloop</p>
-            <p className="hidden truncate text-xs text-slate-500 dark:text-slate-400 sm:block">Plan smarter, travel lighter</p>
-          </div>
+        <Link to="/" className="flex min-w-0 items-center">
+          <img
+            src="/traveloop-logo.png"
+            alt="TravelLoop"
+            className="h-12 w-auto max-w-[150px] object-contain sm:h-14 sm:max-w-[190px]"
+          />
         </Link>
 
         <nav className="hidden items-center gap-2 lg:flex">
@@ -255,6 +254,9 @@ export default function Navbar() {
                 )}
               </div>
               <span className="hidden max-w-[120px] truncate text-sm font-medium sm:inline">{user?.name || 'Account'}</span>
+              <span className="pointer-events-none hidden h-8 w-8 shrink-0 overflow-hidden rounded-full bg-slate-950 sm:block">
+                <Globe3D size={34} tabletSize={34} />
+              </span>
               <FiChevronDown className="text-slate-500" />
             </button>
 
@@ -301,14 +303,12 @@ export default function Navbar() {
           className={`absolute right-0 top-0 flex h-dvh w-[min(88vw,360px)] flex-col overflow-hidden border-l border-slate-200 bg-white shadow-2xl transition-transform duration-300 ease-out dark:border-slate-800 dark:bg-slate-950 ${mobileOpen ? 'translate-x-0' : 'translate-x-full'}`}
         >
           <div className="flex items-center justify-between border-b border-slate-200 px-4 py-4 dark:border-slate-800">
-            <div className="flex min-w-0 items-center gap-3">
-              <div className="grid h-9 w-9 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-teal-500 via-blue-500 to-orange-400 text-base font-black text-white shadow-soft">
-                T
-              </div>
-              <div className="min-w-0">
-                <p className="truncate text-base font-extrabold">Traveloop</p>
-                <p className="truncate text-xs text-slate-500 dark:text-slate-400">Plan smarter, travel lighter</p>
-              </div>
+            <div className="flex min-w-0 items-center">
+              <img
+                src="/traveloop-logo.png"
+                alt="TravelLoop"
+                className="h-12 w-auto max-w-[180px] object-contain"
+              />
             </div>
             <button
               className="grid h-10 w-10 place-items-center rounded-full border border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-200"

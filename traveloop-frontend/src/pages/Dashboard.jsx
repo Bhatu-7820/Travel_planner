@@ -11,7 +11,6 @@ import { estimateTripBudget, sortTripsByStartDate, upcomingTrips } from '@/utils
 import TripCard from '@/components/TripCard';
 import AdSection from '@/components/AdSection';
 import { WORLD_DESTINATIONS, CONTINENTS } from '@/data/worldDestinations';
-import Globe3D from '@/components/Globe3D';
 
 /* ─── Scroll-triggered reveal wrapper ─── */
 function Reveal({ children, delay = 0, direction = 'up' }) {
@@ -186,25 +185,35 @@ export default function Dashboard() {
   return (
     <div className="safe-container relative space-y-5 sm:space-y-8 lg:space-y-10">
       {/* Ambient background blurs */}
-      <div className="pointer-events-none fixed inset-0 -z-10 hidden overflow-hidden md:block">
-        <div className="absolute -top-40 -left-40 h-[500px] w-[500px] rounded-full bg-teal-500/[0.04] blur-3xl animate-float-slow" />
-        <div className="absolute top-1/3 -right-40 h-[400px] w-[400px] rounded-full bg-indigo-500/[0.04] blur-3xl animate-float-reverse" />
-        <div className="absolute bottom-20 left-1/4 h-[350px] w-[350px] rounded-full bg-orange-400/[0.03] blur-3xl animate-float-slow" />
+      <div className="pointer-events-none absolute inset-0 -z-10 hidden overflow-hidden md:block">
+        <div className="absolute -top-40 -left-40 h-[500px] w-[500px] rounded-full bg-teal-500/[0.035] blur-3xl" />
+        <div className="absolute top-1/3 -right-40 h-[400px] w-[400px] rounded-full bg-indigo-500/[0.035] blur-3xl" />
+        <div className="absolute bottom-20 left-1/4 h-[350px] w-[350px] rounded-full bg-orange-400/[0.025] blur-3xl" />
       </div>
 
       {/* ══════════════════════════════════════════
           HERO BANNER
       ══════════════════════════════════════════ */}
       <Reveal>
-        <section className="responsive-card relative overflow-hidden bg-white/40 p-4 text-slate-900 shadow-soft shadow-[0_0_50px_-12px_rgba(99,102,241,0.1)] backdrop-blur-xl border border-white/50 dark:border-white/10 dark:bg-slate-950/40 dark:text-white dark:shadow-[0_0_50px_-12px_rgba(99,102,241,0.25)] sm:p-6">
-          <div className="absolute right-0 top-0 p-4 text-[5rem] font-black leading-none text-indigo-500/[0.04] pointer-events-none select-none dark:text-white/[0.02] sm:p-6 sm:text-[8rem]">T</div>
+        <section className="responsive-card relative overflow-hidden bg-slate-950 p-4 text-white shadow-soft shadow-[0_0_50px_-12px_rgba(99,102,241,0.2)] border border-white/10 sm:p-6">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            className="absolute inset-0 w-full h-full object-cover opacity-100 brightness-[0.62] pointer-events-none"
+            src="/Create_a_second_cinematic_a.mp4"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/30 to-slate-950/10 pointer-events-none" />
           
-          <div className="relative z-10 flex flex-col gap-4 sm:gap-6 lg:flex-row lg:items-center lg:justify-between">
-            <div className="max-w-xl">
-              <span className="mb-2 inline-flex items-center gap-1.5 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-indigo-700 dark:border-white/20 dark:bg-white/10 dark:text-slate-200 sm:mb-2.5 sm:px-3 sm:text-[10px]">
-                <FiGlobe className="animate-spin-slow text-teal-500 dark:text-teal-400" /> Premium Travel Experience
+          <div className="absolute right-0 top-0 p-4 text-[5rem] font-black leading-none text-white/[0.03] pointer-events-none select-none sm:p-6 sm:text-[8rem]">T</div>
+          
+          <div className="relative z-10 max-w-xl text-left">
+              <span className="mb-2 inline-flex items-center gap-1.5 rounded-full border border-teal-500/20 bg-teal-500/10 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-teal-300 sm:mb-2.5 sm:px-3 sm:text-[10px]">
+                <FiGlobe className="animate-spin-slow text-teal-400" /> Premium Travel Experience
               </span>
-              <h1 className="flex flex-wrap items-center gap-2 text-fluid-wrap text-[28px] font-black leading-tight text-slate-900 dark:text-white sm:text-[34px] md:text-[40px] xl:text-[48px]">
+              <h1 className="flex flex-wrap items-center gap-2 text-fluid-wrap text-[28px] font-black leading-tight text-white sm:text-[34px] md:text-[40px] xl:text-[48px]">
                 Hello, {user?.name || 'Traveler'}
                 <motion.span
                   animate={{ rotate: [0, 20, -10, 20, 0] }}
@@ -214,7 +223,7 @@ export default function Dashboard() {
                   👋
                 </motion.span>
               </h1>
-              <p className="mt-1.5 max-w-lg text-xs leading-relaxed text-slate-600 dark:text-slate-300 sm:mt-2 sm:text-sm">
+              <p className="mt-1.5 max-w-lg text-xs leading-relaxed text-slate-200 sm:mt-2 sm:text-sm">
                 Your smart companion for multi-city journeys, secure payments, and reliable travel planning.
               </p>
               <div className="responsive-action-row mt-3 sm:mt-4">
@@ -230,17 +239,11 @@ export default function Dashboard() {
                   onClick={() => document.getElementById('destinations')?.scrollIntoView({ behavior: 'smooth' })}
                   whileHover={{ scale: 1.05, y: -1 }}
                   whileTap={{ scale: 0.97 }}
-                  className="rounded-full border border-slate-300/60 bg-slate-900/5 px-4 py-2.5 text-xs font-bold text-slate-700 backdrop-blur-sm transition-all hover:bg-slate-900/10 hover:text-slate-900 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/15 dark:hover:text-white sm:px-5"
+                  className="rounded-full border border-white/20 bg-white/10 px-4 py-2.5 text-xs font-bold text-white backdrop-blur-sm transition-all hover:bg-white/20 sm:px-5"
                 >
                   Explore Destinations
                 </motion.button>
               </div>
-            </div>
-            
-            {/* Reduced 3D Globe inside the Welcome card */}
-            <div className="mx-auto flex h-[96px] w-full max-w-[116px] shrink-0 items-center justify-center sm:h-[150px] sm:max-w-[180px] lg:mx-0 lg:h-[170px] lg:w-[170px]">
-              <Globe3D />
-            </div>
           </div>
         </section>
       </Reveal>

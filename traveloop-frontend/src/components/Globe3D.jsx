@@ -23,9 +23,10 @@ function getGlobeMode() {
   return 'desktop';
 }
 
-export default function Globe3D() {
+export default function Globe3D({ size = 170, tabletSize = 150 }) {
   const chartRef = useRef(null);
   const [mode, setMode] = useState(getGlobeMode);
+  const chartSize = mode === 'tablet' ? tabletSize : size;
 
   useEffect(() => {
     const updateMode = () => setMode(getGlobeMode());
@@ -62,10 +63,10 @@ export default function Globe3D() {
         panX: mode === 'desktop' ? 'rotateX' : 'none',
         panY: mode === 'desktop' ? 'rotateY' : 'none',
         projection: am5map.geoOrthographic(),
-        paddingBottom: 8,
-        paddingTop: 8,
-        paddingLeft: 8,
-        paddingRight: 8,
+        paddingBottom: chartSize < 80 ? 0 : 8,
+        paddingTop: chartSize < 80 ? 0 : 8,
+        paddingLeft: chartSize < 80 ? 0 : 8,
+        paddingRight: chartSize < 80 ? 0 : 8,
         wheelY: 'none',
         wheelX: 'none',
         pinchBehavior: 'none',
@@ -212,7 +213,7 @@ export default function Globe3D() {
       disposed = true;
       root?.dispose();
     };
-  }, [mode]);
+  }, [chartSize, mode]);
 
   return (
     <div className="relative flex h-full w-full select-none items-center justify-center">
@@ -222,7 +223,7 @@ export default function Globe3D() {
         <div
           ref={chartRef}
           className="h-full max-h-full w-full max-w-full"
-          style={{ width: mode === 'tablet' ? '150px' : '170px', height: mode === 'tablet' ? '150px' : '170px' }}
+          style={{ width: `${chartSize}px`, height: `${chartSize}px` }}
         />
       )}
     </div>

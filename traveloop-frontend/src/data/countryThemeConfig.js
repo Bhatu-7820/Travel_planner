@@ -162,8 +162,16 @@ export const COUNTRY_THEMES = {
 
 export const COUNTRY_VIDEOS = {
   japan: {
-    heroVideoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-traffic-in-a-futuristic-city-at-night-44368-large.mp4',
+    heroVideoUrl: '/Create_a_second_cinematic_a.mp4',
     reels: [
+      {
+        id: 'jp_cinematic',
+        title: 'Exclusive Japan Cinematic Journey',
+        videoUrl: '/Create_a_second_cinematic_a.mp4',
+        thumbnail: '/paradise_sunset.jpg',
+        duration: '0:10',
+        views: '1.2M'
+      },
       {
         id: 'jp1',
         title: 'Late Night Neon Wandering in Shinjuku, Tokyo',
@@ -199,8 +207,16 @@ export const COUNTRY_VIDEOS = {
     ]
   },
   india: {
-    heroVideoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-scenic-view-of-a-mountain-lake-48908-large.mp4',
+    heroVideoUrl: '/Create_a_second_cinematic_a.mp4',
     reels: [
+      {
+        id: 'in_cinematic',
+        title: 'Exclusive India Cinematic Vibe',
+        videoUrl: '/Create_a_second_cinematic_a.mp4',
+        thumbnail: '/paradise_sunset.jpg',
+        duration: '0:10',
+        views: '1.5M'
+      },
       {
         id: 'in1',
         title: 'Golden Hour Reflecting on Taj Mahal Marble Walls',
@@ -236,8 +252,16 @@ export const COUNTRY_VIDEOS = {
     ]
   },
   france: {
-    heroVideoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-time-lapse-of-a-sunset-over-a-city-skyline-48909-large.mp4',
+    heroVideoUrl: '/Create_a_second_cinematic_a.mp4',
     reels: [
+      {
+        id: 'fr_cinematic',
+        title: 'Exclusive France Cinematic Vibe',
+        videoUrl: '/Create_a_second_cinematic_a.mp4',
+        thumbnail: '/paradise_sunset.jpg',
+        duration: '0:10',
+        views: '1.1M'
+      },
       {
         id: 'fr1',
         title: 'Seine River Cruise: Sunset Over the Eiffel Tower',
@@ -273,8 +297,16 @@ export const COUNTRY_VIDEOS = {
     ]
   },
   usa: {
-    heroVideoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-driving-on-a-scenic-coastal-road-48913-large.mp4',
+    heroVideoUrl: '/Create_a_second_cinematic_a.mp4',
     reels: [
+      {
+        id: 'us_cinematic',
+        title: 'Exclusive USA Cinematic Vibe',
+        videoUrl: '/Create_a_second_cinematic_a.mp4',
+        thumbnail: '/paradise_sunset.jpg',
+        duration: '0:10',
+        views: '1.4M'
+      },
       {
         id: 'us1',
         title: 'Redwood Highway Coastal Drive in California',
@@ -310,8 +342,16 @@ export const COUNTRY_VIDEOS = {
     ]
   },
   greece: {
-    heroVideoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-beautiful-island-48906-large.mp4',
+    heroVideoUrl: '/Create_a_second_cinematic_a.mp4',
     reels: [
+      {
+        id: 'gr_cinematic',
+        title: 'Exclusive Greece Cinematic Vibe',
+        videoUrl: '/Create_a_second_cinematic_a.mp4',
+        thumbnail: '/paradise_sunset.jpg',
+        duration: '0:10',
+        views: '1.3M'
+      },
       {
         id: 'gr1',
         title: 'Santorini Blue Domes: Cliffside Aerial Flyover',
@@ -347,8 +387,16 @@ export const COUNTRY_VIDEOS = {
     ]
   },
   egypt: {
-    heroVideoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-time-lapse-of-a-sunset-over-a-city-skyline-48909-large.mp4',
+    heroVideoUrl: '/Create_a_second_cinematic_a.mp4',
     reels: [
+      {
+        id: 'eg_cinematic',
+        title: 'Exclusive Egypt Cinematic Vibe',
+        videoUrl: '/Create_a_second_cinematic_a.mp4',
+        thumbnail: '/paradise_sunset.jpg',
+        duration: '0:10',
+        views: '1.2M'
+      },
       {
         id: 'eg1',
         title: 'Pyramids Sunrise: Giza Plateau Basalt Glow',
@@ -384,8 +432,16 @@ export const COUNTRY_VIDEOS = {
     ]
   },
   default: {
-    heroVideoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-beautiful-island-48906-large.mp4',
+    heroVideoUrl: '/Create_a_second_cinematic_a.mp4',
     reels: [
+      {
+        id: 'def_cinematic',
+        title: 'Exclusive Travel Cinematic Vibe',
+        videoUrl: '/Create_a_second_cinematic_a.mp4',
+        thumbnail: '/paradise_sunset.jpg',
+        duration: '0:10',
+        views: '1.2M'
+      },
       {
         id: 'r1',
         title: 'Exploring Scenic Mountain Ranges & Alpine Valleys',
