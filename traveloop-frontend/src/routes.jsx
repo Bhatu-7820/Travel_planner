@@ -21,6 +21,7 @@ import { useState, useEffect } from 'react';
 import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
 import AIHub from '@/pages/AIHub';
+import DestinationPage from '@/pages/DestinationPage';
 
 import AIAssistant from '@/components/AIAssistant';
 import SmoothScroll from '@/components/SmoothScroll';
@@ -165,6 +166,17 @@ export default function AppRoutes() {
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/agents" element={<AgentMarketplace />} />
       </Route>
+
+      <Route
+        path="/destination/:countryId"
+        element={
+          <ProtectedRoute>
+            <SmoothScroll>
+              <DestinationPage />
+            </SmoothScroll>
+          </ProtectedRoute>
+        }
+      />
 
       <Route path="/public/:tripId" element={<PublicItinerary />} />
       <Route path="*" element={<Navigate to="/" replace />} />

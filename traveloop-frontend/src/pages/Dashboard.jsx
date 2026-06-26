@@ -58,7 +58,7 @@ const DestCard = memo(function DestCard({ dest, index, onClick }) {
       transition={{ duration: 0.28, delay: Math.min(index * 0.01, 0.12), ease: [0.22, 1, 0.36, 1] }}
       whileHover={{ y: -6, scale: 1.03 }}
       whileTap={{ scale: 0.97 }}
-      onClick={onClick}
+      onClick={() => onClick(dest)}
       className="cursor-pointer flip-card"
     >
       <div className="flip-card-inner">
@@ -166,7 +166,10 @@ export default function Dashboard() {
   }, [continent, search]);
 
   const visibleDests = showAll ? filteredDests : filteredDests.slice(0, 18);
-  const handlePlanDestination = useCallback(() => navigate('/create-trip'), [navigate]);
+  const handlePlanDestination = useCallback((dest) => {
+    const countryId = dest.country.toLowerCase().replace(/\s+/g, '-');
+    navigate(`/destination/${countryId}`);
+  }, [navigate]);
 
   return (
     <div className="safe-container relative space-y-5 sm:space-y-8 lg:space-y-10">

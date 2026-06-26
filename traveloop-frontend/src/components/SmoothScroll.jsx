@@ -23,12 +23,6 @@ export default function SmoothScroll({ children }) {
 
     lenisRef.current = lenis;
 
-    // Keep framer-motion scroll values in sync
-    function onScroll() {
-      window.dispatchEvent(new Event('scroll'));
-    }
-    lenis.on('scroll', onScroll);
-
     let raf;
     function raf_loop(time) {
       lenis.raf(time);
@@ -37,7 +31,6 @@ export default function SmoothScroll({ children }) {
     raf = requestAnimationFrame(raf_loop);
 
     return () => {
-      lenis.off('scroll', onScroll);
       cancelAnimationFrame(raf);
       lenis.destroy();
     };
